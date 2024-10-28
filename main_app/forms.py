@@ -52,6 +52,11 @@ class NewsForm(forms.ModelForm):
         }
 
 class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(
+        label=_("Email"),
+        required=True,
+        help_text=_("Обязательное поле. Используется для восстановления пароля."),
+    )
     username = forms.CharField(
         label=_("Имя пользователя"),
         help_text=_("Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_."),
@@ -72,7 +77,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("username", "password1", "password2")
+        fields = ("username", "email", "password1", "password2")
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -92,3 +97,7 @@ class StudentForm(forms.ModelForm):
 
 class ExcelUploadForm(forms.Form):
     excel_file = forms.FileField(label='Excel файл')
+
+class PasswordResetRequestForm(forms.Form):
+    username = forms.CharField(label="Имя пользователя")
+    email = forms.EmailField(label="Email")

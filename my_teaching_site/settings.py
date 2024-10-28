@@ -105,7 +105,13 @@ DATETIME_FORMAT = 'd.m.Y H:i'
 SHORT_DATE_FORMAT = 'd.m.Y'
 SHORT_DATETIME_FORMAT = 'd.m.Y H:i'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Настройки email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # или другой SMTP-сервер
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ваш_email@gmail.com'
+EMAIL_HOST_PASSWORD = 'ваш_пароль_приложения'  # Для Gmail нужно использовать пароль приложения
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = False  # Установите True, если используете HTTPS

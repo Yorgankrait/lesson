@@ -27,6 +27,9 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.sessions.models import Session
 from django.contrib.sessions.backends.db import SessionStore
 import logging
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
+from .forms import PasswordResetRequestForm
 
 logger = logging.getLogger(__name__)
 
@@ -99,7 +102,7 @@ def chat_message(request):
                 
                 # Дополнительные функции
                 'посещаемость': 'В разделе "Посещаемость" можно отслеживать присутствие учеников на занятиях. Доступно для преподавателей и родителей.',
-                'регистрация': 'Чтобы зарегистрироваться на сайте, нажмите кнопку "Регистрация" внизу страницы и заполните форму.',
+                'регистраця': 'Чтобы зарегистрироваться на сайте, нажмите кнопку "Регистрация" внизу страницы и заполните форму.',
                 'вход': 'Для входа на сайт используйте кнопку "Вход для учеников/родителей" в нижней части страницы.',
                 'админ': 'Вход для администратора доступен по соответствующей кнопке в футере сайта.',
                 
@@ -113,7 +116,7 @@ def chat_message(request):
                 'код': 'Вы можете писать и тестировать код в разделе "Python Интерпретатор". Он поддерживает все базовые функции Python.',
             }
             
-            # Поиск ответа в стандартных ответах
+            # Поиск ответа в стандартных ответх
             bot_response = None
             for key in responses:
                 if key in message:
@@ -122,12 +125,12 @@ def chat_message(request):
             
             # Если стандартный ответ не найден
             if not bot_response:
-                # Ищем похожие вопросы в базе (используем icontains для нечеткого поиска)
+                # Ищем похожие вопросы в базе (используем icontains дл нечеткого поиска)
                 similar_questions = UnknownQuestion.objects.filter(
                     question__icontains=message
                 )
                 
-                # Если найден отвеченный вопрос, используем его ответ
+                # Если найден отвеченны вопрос, используем его ответ
                 answered_question = similar_questions.filter(is_answered=True).first()
                 if answered_question and answered_question.answer:
                     bot_response = answered_question.answer
@@ -147,7 +150,7 @@ def chat_message(request):
                     )
                     bot_response = ('Я пока не знаю ответа на этот вопрос, '
                                   'но я передам его администратору. '
-                                  'А пока могу рассказать о разделах сайта - '
+                                  'А поа могу рассказать о разделх сайта - '
                                   'спросите меня о: главная, ученики, материалы, '
                                   'интерпретатор, или напишите "помощь".')
             
@@ -424,3 +427,57 @@ def login_view(request):
             messages.error(request, 'Invalid username or password')
     return render(request, 'login.html')
 
+def password_reset_request(request):
+    if request.method == 'POST':
+        form = PasswordResetRequestForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            try:
+                user = User.objects.get(username=username, email=email)
+                
+                # Если пользователь найден и есть новый пароль в запросе
+                if 'new_password1' in request.POST and 'new_password2' in request.POST:
+                    new_password1 = request.POST['new_password1']
+                    new_password2 = request.POST['new_password2']
+                    
+                    if new_password1 != new_password2:
+                        messages.error(request, 'Пароли не совпадают!')
+                        return render(request, 'password_reset_form.html', {'user_found': True})
+                    
+                    if len(new_password1) < 8:
+                        messages.error(request, 'Пароль должен содержать минимум 8 символов!')
+                        return render(request, 'password_reset_form.html', {'user_found': True})
+                    
+                    try:
+                        # Устанавливаем новый пароль
+                        user.set_password(new_password1)
+                        user.save()
+                        
+                        # Авторизуем пользователя
+                        auth_user = authenticate(username=username, password=new_password1)
+                        if auth_user is not None:
+                            login(request, auth_user)
+                            messages.success(request, 'Пароль успешно изменен! Сейчас вы будете перенаправлены на главную страницу.')
+                            return render(request, 'password_reset_success.html')
+                        else:
+                            messages.warning(request, 'Пароль изменен, но автоматическая авторизация не удалась. Пожалуйста, войдите с новым паролем.')
+                            return redirect('login')
+                    except Exception as e:
+                        messages.error(request, f'Ошибка при смене пароля: {str(e)}')
+                        return render(request, 'password_reset_form.html', {'user_found': True})
+                
+                # Если пользователь найден, но это первый шаг (проверка логина и email)
+                return render(request, 'password_reset_form.html', {
+                    'user_found': True,
+                    'username': username,
+                    'email': email
+                })
+                
+            except User.DoesNotExist:
+                messages.error(request, 'Пользователь с такими данными не найден')
+                return render(request, 'password_reset_request.html', {'form': form})
+    else:
+        form = PasswordResetRequestForm()
+    
+    return render(request, 'password_reset_request.html', {'form': form})
