@@ -27,7 +27,7 @@
                             <i class="fas fa-bars"></i>
                             <div class="dropdown-menu">
                                 <a href="{% url 'about' %}" class="dropdown-item">Обо мне</a>
-                                {% if user.is_authenticated and user.userprofile.user_type == 'teacher' and user.userprofile.is_teacher_activated %}
+                                {% if user.is_authenticated and user.is_superuser or user.userprofile.user_type == 'teacher' and user.userprofile.is_teacher_activated %}
                                     <a href="{% url 'teacher_resources' %}" class="dropdown-item">Полезное для учителей</a>
                                 {% endif %}
                             </div>
@@ -39,7 +39,7 @@
                     <li class="nav-item">
                         <a href="{% url 'students' %}" class="nav-button">Ученики и их проекты</a>
                     </li>
-                    {% if not user.is_authenticated or user.userprofile.user_type != 'parent' and not user.userprofile.user_type == 'teacher' or user.userprofile.is_teacher_activated or user.userprofile.user_type == 'student' and user.userprofile.is_student_activated %}
+                    {% if user.is_superuser or not user.is_authenticated or user.userprofile.user_type != 'parent' and not user.userprofile.user_type == 'teacher' or user.userprofile.is_teacher_activated or user.userprofile.user_type == 'student' and user.userprofile.is_student_activated %}
                         <li class="nav-item">
                             <a href="{% url 'lessons' %}" class="nav-button">Учебные материалы</a>
                         </li>

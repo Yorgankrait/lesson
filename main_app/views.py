@@ -75,7 +75,7 @@ def check_teacher_access(user):
 def check_teacher_or_admin_access(user):
     if not user.is_authenticated:
         return False
-    if user.is_superuser:
+    if user.is_superuser:  # Проверяем, является ли пользователь админом
         return True
     profile = user.userprofile
     return profile.user_type == 'teacher' and profile.is_teacher_activated
@@ -180,7 +180,7 @@ def chat_message(request):
                 # Приветствия и прощания
                 'привет': 'Здравствуйте! Я помогу вам разобраться с сайтом. Спросите меня о любом разделе, напишите "права" чтобы узнать о возможностях разных типов пользователей, или "предложить идею" чтобы поделиться своими идеями по улучшению сайта.',
                 'пока': 'До свидания! Буду рад помочь снова!',
-                'как дела': 'У меня всё хорошо, готов помогать! Что вас интересует? Напишите "права" чтобы узнать о возможностях разных типов пользователей, или "предложить идею" чтобы поделиться своими идеями.',
+                'как дела': 'У меня всё хорошо, готов помогать! Что вас интересует? Напишите "права" чтобы узнать о возможностях разных типов пользователей, или "предложить идею" ��тобы поделиться своими идеями.',
                 
                 # Описание разделов
                 'главная': 'На главной странице вы найдете общую информацию о нашем обучающем проекте и меня - вашего помощника по сайту.',
@@ -243,7 +243,7 @@ def chat_message(request):
                     bot_response = ('Извините, я пока не знаю ответа на этот вопрос. '
                                   'Я передал ваш вопрос администратору. '
                                   'Попробуйте спросить о конкретном разделе сайта '
-                                  'или напишите "помощь" для получения списка доступных команд.')
+                                  'или напишите "помощь" для получения списка доступных ко��анд.')
             
             # Сохраняем ответ бота
             ChatMessage.objects.create(user=request.user, message=bot_response, is_bot=True)
@@ -591,11 +591,12 @@ def about(request):
 
 @wrap_view
 def teacher_resources(request):
-    # Доступно только активированным учителям
-    if not check_teacher_access(request.user):
+    # Доступно активированным учителям и администраторам
+    if not check_teacher_or_admin_access(request.user):
         raise PermissionDenied
     resources = TeacherResource.objects.all()
     return render(request, 'teacher_resources.html', {'resources': resources})
+
 
 
 
