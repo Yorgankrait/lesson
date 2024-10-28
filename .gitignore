@@ -50,5 +50,6 @@ ENV/
 # Project specific
 debug.log
 *.pptx
-*.mp4
+# Video files
+# *.mp4  # Закомментируйте эту строку
 uploads/
