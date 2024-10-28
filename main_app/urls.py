@@ -49,4 +49,8 @@ urlpatterns = [
     
     # Добавьте новый URL-маршрут
     path('password_reset_request/', views.password_reset_request, name='password_reset_request'),
+    
+    # Добавьте новые URL-маршруты
+    path('teacher-resources/', views.teacher_resources, name='teacher_resources'),
+    path('about/', views.about, name='about'),
 ]

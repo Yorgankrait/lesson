@@ -73,6 +73,7 @@ nav {
     transform: none;
     z-index: 10;
     height: 60px;
+    display: block; /* Возвращаем отображение по умолчанию */
 }
 
 nav ul {
@@ -80,7 +81,7 @@ nav ul {
     margin: 0 auto;
     padding: 0 10px;
     display: flex;
-    justify-content: space-between; /* Изменено с flex-start на space-between */
+    justify-content: space-between;
     align-items: center;
     list-style-type: none;
     height: 100%;
@@ -166,7 +167,7 @@ main {
 
 /* Добавляем стили для случая, когда мы не на главной странице */
 .full-width main {
-    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить область чат-бота */
+    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить обла�� чат-бота */
     left: -70px; /* Сохраняе левое смещение */
 }
 
@@ -929,4 +930,99 @@ footer {
     border-radius: 4px;
     border: 1px solid rgba(76, 175, 80, 0.5);
 }
+
+.hamburger-container {
+    flex: 0 0 auto !important;
+    margin-right: 10px;
+    position: relative; /* Важно для позиционирования выпадающего меню */
+}
+
+.hamburger-menu {
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    min-width: 40px; /* Минимальная ширина для иконки */
+    justify-content: center;
+}
+
+.hamburger-menu:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% - 10px); /* Сдвигаем вверх на 10px (было -5px) */
+    left: -20px;
+    background: none;
+    border-radius: 20px;
+    padding: 10px;
+    margin-top: 5px;
+    white-space: nowrap;
+    flex-direction: row;
+    gap: 10px;
+    z-index: 1000;
+    min-width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.hamburger-menu:hover .dropdown-menu {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-menu:hover {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-item {
+    color: white;
+    text-decoration: none;
+    padding: 6px 15px; /* Уменьшили с 8px до 6px */
+    transition: background-color 0.3s;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Добавляем область для наведения */
+.dropdown-menu:before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+}
+
+/* Остальные стили остаются без изменений */
+
+
+
+
+
+
 

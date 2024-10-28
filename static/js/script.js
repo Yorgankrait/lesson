@@ -1,21 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM fully loaded and parsed');
 
-    const hamburgerIcon = document.querySelector('.hamburger-icon');
-    const contextMenu = document.querySelector('.context-menu');
-
-    if (hamburgerIcon && contextMenu) {
-        hamburgerIcon.addEventListener('click', function(event) {
-            event.stopPropagation();
-            contextMenu.style.display = contextMenu.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.addEventListener('click', function() {
-            contextMenu.style.display = 'none';
-        });
-    }
-
-    // Обновляем обработчик для кнопки "Скрыть все объекты"
+    // Обработчик для кнопки "Скрыть все объекты"
     const toggleObjectsButton = document.getElementById('toggleObjects');
     console.log('Toggle button:', toggleObjectsButton);
 

@@ -108,7 +108,7 @@ def chat_message(request):
                 
                 # Помощь
                 'помощь': 'Я могу ассказать о любом разделе сайта. Спросите меня о: главная, ученики, материалы, интерпретатор, посещаемость, регистрация, вход.',
-                'что ты умеешь': 'Я могу рассказать о разных частях сайта, помочь с навигацией и ответить на базовые вопросы. Спросите меня о конкретном разделе!',
+                'что ты умеешь': 'Я могу рассказать о разных частях сайта, помочь с навигацией и ответить на базовые вопросы. Спросите меня о конкетном разделе!',
                 
                 # Дополнительые ключевые слова
                 'проекты': 'Проекты учеников можно посмотреть в разделе "Ученики и их проекты". Там представлены их лучшие работы.',
@@ -461,7 +461,7 @@ def password_reset_request(request):
                             messages.success(request, 'Пароль успешно изменен! Сейчас вы будете перенаправлены на главную страницу.')
                             return render(request, 'password_reset_success.html')
                         else:
-                            messages.warning(request, 'Пароль изменен, но автоматическая авторизация не удалась. Пожалуйста, войдите с новым паролем.')
+                            messages.warning(request, 'Пароль изменен, но автоматическая аворизация не удалась. Пожалуйста, войдите с новым паролем.')
                             return redirect('login')
                     except Exception as e:
                         messages.error(request, f'Ошибка при смене пароля: {str(e)}')
@@ -481,3 +481,12 @@ def password_reset_request(request):
         form = PasswordResetRequestForm()
     
     return render(request, 'password_reset_request.html', {'form': form})
+
+@wrap_view
+def teacher_resources(request):
+    return render(request, 'teacher_resources.html')
+
+@wrap_view
+def about(request):
+    return render(request, 'about.html')
+
