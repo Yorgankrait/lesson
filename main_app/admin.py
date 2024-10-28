@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lesson, ChatMessage, Student, Attendance, UnknownQuestion, Project, News
+from .models import Lesson, ChatMessage, Student, Attendance, UnknownQuestion, Project, News, AboutPage, TeacherResource, UserProfile
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
@@ -74,3 +74,46 @@ class NewsAdmin(admin.ModelAdmin):
             'fields': ('title', 'content', 'is_published')
         }),
     )
+
+@admin.register(AboutPage)
+class AboutPageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'title', 'updated_at')
+    search_fields = ('name', 'title', 'experience', 'education')
+
+@admin.register(TeacherResource)
+class TeacherResourceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'created_at', 'updated_at')
+    search_fields = ('title', 'description')
+    list_filter = ('created_at', 'updated_at')
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'user_type', 'is_teacher_activated', 'is_student_activated', 'get_email')
+    list_filter = ('user_type', 'is_teacher_activated', 'is_student_activated')
+    search_fields = ('user__username', 'user__email')
+    list_editable = ('is_teacher_activated', 'is_student_activated')
+    actions = ['activate_teachers', 'deactivate_teachers', 'activate_students', 'deactivate_students']
+    
+    def get_email(self, obj):
+        return obj.user.email
+    get_email.short_description = 'Email'
+    
+    def activate_teachers(self, request, queryset):
+        updated = queryset.filter(user_type='teacher').update(is_teacher_activated=True)
+        self.message_user(request, f'Активировано {updated} учителей')
+    activate_teachers.short_description = "Активировать выбранных учителей"
+
+    def deactivate_teachers(self, request, queryset):
+        updated = queryset.filter(user_type='teacher').update(is_teacher_activated=False)
+        self.message_user(request, f'Деактивировано {updated} учителей')
+    deactivate_teachers.short_description = "Деактивировать выбранных учителей"
+
+    def activate_students(self, request, queryset):
+        updated = queryset.filter(user_type='student').update(is_student_activated=True)
+        self.message_user(request, f'Активировано {updated} учеников')
+    activate_students.short_description = "Активировать выбранных учеников"
+
+    def deactivate_students(self, request, queryset):
+        updated = queryset.filter(user_type='student').update(is_student_activated=False)
+        self.message_user(request, f'Деактивировано {updated} учеников')
+    deactivate_students.short_description = "Деактивировать выбранных учеников"

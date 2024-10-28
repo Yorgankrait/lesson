@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate
-from .models import Lesson, Attendance, ChatMessage, Student, UnknownQuestion, News
+from .models import Lesson, Attendance, ChatMessage, Student, UnknownQuestion, News, AboutPage, TeacherResource
 from .forms import LessonForm, CustomUserCreationForm, ExcelUploadForm, AttendanceForm, StudentForm
 import pandas as pd
 import os
@@ -30,6 +30,7 @@ import logging
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from .forms import PasswordResetRequestForm
+from django.core.exceptions import PermissionDenied
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +54,38 @@ def home(request):
     news = News.objects.filter(is_published=True).order_by('-created_at')
     return render(request, 'home.html', {'news': news})
 
+def check_student_access(user):
+    if not user.is_authenticated:
+        return False
+    profile = user.userprofile
+    return profile.user_type == 'student' and profile.is_student_activated
+
+def check_parent_access(user):
+    if not user.is_authenticated:
+        return False
+    profile = user.userprofile
+    return profile.user_type == 'parent'
+
+def check_teacher_access(user):
+    if not user.is_authenticated:
+        return False
+    profile = user.userprofile
+    return profile.user_type == 'teacher' and profile.is_teacher_activated
+
+def check_teacher_or_admin_access(user):
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    profile = user.userprofile
+    return profile.user_type == 'teacher' and profile.is_teacher_activated
+
 @wrap_view
 def students(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, 'Для просмотра этой страницы необходимо войти в систему.')
+        return redirect('login')
+    
     active_students = Student.objects.filter(active=True).select_related('project')
     students_data = []
     
@@ -70,6 +101,25 @@ def students(request):
 
 @wrap_view
 def lessons(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, 'Для просмотра учебных материалов необходимо войти в систему.')
+        return redirect('login')
+    
+    # Проверяем, является ли пользователь родителем
+    if request.user.userprofile.user_type == 'parent':
+        messages.warning(request, 'У родителей нет доступа к учебным материалам.')
+        return render(request, 'lessons.html', {'error_message': 'У родителей нет доступа к учебным материалам.'})
+    
+    # Проверяем, является ли пользователь неактивированным учителем
+    if request.user.userprofile.user_type == 'teacher' and not request.user.userprofile.is_teacher_activated:
+        messages.warning(request, 'Ваша учетная запись учителя ожидает активации администратором. После активации вам станут доступны учебные материалы.')
+        return render(request, 'lessons.html', {'error_message': 'Ваша учетная запись учителя ожидает активации администратором. После активации вам станут доступны учебные материалы.'})
+    
+    # Проверяем, является ли пользователь неактивированным учеником
+    if request.user.userprofile.user_type == 'student' and not request.user.userprofile.is_student_activated:
+        messages.warning(request, 'Ваша учетная запись ученика ожидает активации администратором. После активации вам станут доступны учебные материалы. Пока вы можете пользоваться Python интерпретатором, просматривать информацию о посещаемости, а также посмотреть информацию об авторе проекта.')
+        return render(request, 'lessons.html', {'error_message': 'Ваша учетная запись ученика ожидает активации администратором. После активации вам станут доступны учебные материалы. Пока вы можете пользоваться Python интерпретатором, просматривать информацию о посещаемости, а также посмотреть информацию об авторе проекта.'})
+    
     lessons = Lesson.objects.all().order_by('-upload_date')
     return render(request, 'lessons.html', {'lessons': lessons})
 
@@ -77,14 +127,21 @@ def lessons(request):
 @wrap_view
 def chat_message(request):
     if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'message': 'Authentication required'}, status=401)
+        return JsonResponse({
+            'status': 'success', 
+            'message': ('Для общения со мной необходимо зарегистрироваться. '
+                       'Без регистрации вам доступны только Python Интерпретатор '
+                       'и информация обо мне в выпадающем меню. '
+                       'Пожалуйста, зарегистрируйтесь или войдите в систему, '
+                       'чтобы получить доступ ко всем функциям сайта.')
+        })
     
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             message = data.get('message').lower()
             
-            # Сохраняем сообщние пользователя
+            # Сохраняем сообщение пользователя
             ChatMessage.objects.create(user=request.user, message=message, is_bot=False)
             
             # Расширенные ответы бота
@@ -95,25 +152,74 @@ def chat_message(request):
                 'как дела': 'У меня всё хорошо, готов помогать! Что вас интересует?',
                 
                 # Описание разделов
-                'главная': 'На главной странице вы найдете общую информацию о нашем обучающем проекте и меня - вашего помощника по сайту.',
+                'главная': 'На главно сранице вы найдете общую информацию о нашем обучающем проекте и меня - вашего помощника по сайту.',
                 'ученики': 'В разделе "Ученики и их проекты" вы можете увидеть работы наших учеников, их достижения и проекты, которые они создали во время обучения.',
-                'материаы': 'В разделе "Учебные материалы" собраны все презентации и уроки по программированию. Вы можете просматривать их онлайн или скачивать.',
+                'материаы': 'В аздале "Учебные материалы" собраны все презентации и уроки по программированию. Вы можете просматривать их онлайн или скачивать.',
                 'интерпретатор': 'Python Интерпретатор позволяет писать и выполнять код прямо в браузере. Отличный инструмент для практики!',
                 
                 # Дополнительные функции
-                'посещаемость': 'В разделе "Посещаемость" можно отслеживать присутствие учеников на занятиях. Доступно для преподавателей и родителей.',
+                'посещаемость': 'В разделе "Посещаемость" можно отслеживать присутствие учеников на занятиях. Достпно для преподавателей и родителей.',
                 'регистраця': 'Чтобы зарегистрироваться на сайте, нажмите кнопку "Регистрация" внизу страницы и заполните форму.',
                 'вход': 'Для входа на сайт используйте кнопку "Вход для учеников/родителей" в нижней части страницы.',
                 'админ': 'Вход для администратора доступен по соответствующей кнопке в футере сайта.',
                 
                 # Помощь
-                'помощь': 'Я могу ассказать о любом разделе сайта. Спросите меня о: главная, ученики, материалы, интерпретатор, посещаемость, регистрация, вход.',
+                'помощь': 'Я могу ассказать о любом разделе сайта. Спро��ите меня о: главная, ученики, материалы, интерпретатор, посещаемость, регистрация, вход.',
                 'что ты умеешь': 'Я могу рассказать о разных частях сайта, помочь с навигацией и ответить на базовые вопросы. Спросите меня о конкетном разделе!',
                 
                 # Дополнительые ключевые слова
-                'проекты': 'Проекты учеников можно посмотреть в разделе "Ученики и их проекты". Там представлены их лучшие работы.',
+                'проекты': 'Проекты учеников можно посмотреть в разделе "Ученики и их проекты". Там предствлены их лучшие работы.',
                 'уроки': 'Все уроки доступны в разделе "Учебные материалы". Они представлены в виде презентаций, которые можно просматривать онлайн.',
                 'код': 'Вы можете писать и тестировать код в разделе "Python Интерпретатор". Он поддерживает все базовые функции Python.',
+                
+                # Информация о правах доступа
+                'права': ('Давайте я расскажу о правах доступа:\n\n'
+                         '1. Неавторизованный пользователь:\n'
+                         '- Доступ к Python интерпретатору\n'
+                         '- Просмотр информации "Обо мне"\n\n'
+                         '2. Ученик (до активации администратором):\n'
+                         '- Все функции неавторизованного пользователя\n'
+                         '- Просмотр учеников и их проектов\n'
+                         '- Просмотр посещаемости\n'
+                         '- Общение со мной\n\n'
+                         '3. Ученик (после активации администратором):\n'
+                         '- Все функции неавторизованного пользователя\n'
+                         '- Доступ к учебным материалам\n'
+                         '- Просмотр учеников и их проектов\n'
+                         '- Просмотр посещаемости\n'
+                         '- Общение со мной\n\n'
+                         '4. Родитель:\n'
+                         '- Все функции неавторизованного пользователя\n'
+                         '- Просмотр учеников и их проектов\n'
+                         '- Просмотр посещаемости\n'
+                         '- Общение со мной\n\n'
+                         '5. Учитель (до активации администратором):\n'
+                         '- Те же права, что и у родителя\n\n'
+                         '6. Учитель (после активации администратором):\n'
+                         '- Все функции неавторизованного пользователя\n'
+                         '- Доступ к учебным материалам\n'
+                         '- Просмотр учеников и их проектов\n'
+                         '- Просмотр посещаемости\n'
+                         '- Доступ к разделу "Полезное для учителей"\n'
+                         '- Общение со мной'),
+                
+                'доступ': 'Чтобы узнать о правах доступа разных пользователей, напишите "права"',
+                'что могут': 'Чтобы узнать о возможностях разных пользователей, напишите "права"',
+                'возможности': 'Чтобы узнать о возможностях разных пользователей, напишите "права"',
+                
+                'учитель': ('Учетная запись учителя создается при регистрации, '
+                           'но для получения полного доступа требуется активация администратором. '
+                           'До активации доступны те же функции, что и у родителя. '
+                           'После активации появляется доступ к учебным материалам и '
+                           'разделу "Полезное для учителей"'),
+                
+                'ученик': ('Ученику доступны: Python интерпретатор, учебные материалы, '
+                          'просмотр учеников и их проектов, просмотр посещаемости, '
+                          'общение со мной'),
+                
+                'родитель': ('Родителю доступны: Python интерпретатор, '
+                            'просмотр учеников и их проектов, просмотр посещаемости, '
+                            'общение со мной'),
             }
             
             # Поиск ответа в стандартных ответх
@@ -137,7 +243,7 @@ def chat_message(request):
                 
                 # Если похожий вопрос уже есть, но без ответа
                 elif similar_questions.exists():
-                    bot_response = ('Этот вопрос уже передан администратору и скоро будет отвечен. '
+                    bot_response = ('Этот вопрос уже передан админитратору и скоро будет отвечен. '
                                   'А пока я могу рассказать о разделах сайта - '
                                   'спросите меня о: главная, ученики, материалы, '
                                   'интерпретатор, или напишите "помощь".')
@@ -150,7 +256,7 @@ def chat_message(request):
                     )
                     bot_response = ('Я пока не знаю ответа на этот вопрос, '
                                   'но я передам его администратору. '
-                                  'А поа могу рассказать о разделх сайта - '
+                                  'А поа огу рассказать о разделх сайта - '
                                   'спросите меня о: главная, ученики, материалы, '
                                   'интерпретатор, или напишите "помощь".')
             
@@ -164,10 +270,14 @@ def chat_message(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     
     elif request.method == 'GET':
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'success', 'messages': []})
         messages = ChatMessage.objects.filter(user=request.user).values('message', 'is_bot')
         return JsonResponse({'status': 'success', 'messages': list(messages)})
     
     elif request.method == 'DELETE':
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'Authentication required'}, status=401)
         ChatMessage.objects.filter(user=request.user).delete()
         return JsonResponse({'status': 'success', 'message': 'Chat history cleared'})
     
@@ -188,7 +298,7 @@ def view_lesson(request, lesson_id):
             draw = ImageDraw.Draw(img)
             
             try:
-                # Определяем систему и выбираем соответствующие шрифты
+                # Определяем систему и выбираем соответствующе шрифты
                 if os.name == 'nt':  # Windows
                     title_font = ImageFont.truetype("C:\\Windows\\Fonts\\Arial.ttf", 32)
                     content_font = ImageFont.truetype("C:\\Windows\\Fonts\\Arial.ttf", 24)
@@ -323,11 +433,13 @@ def register(request):
 
 @wrap_view
 def python_interpreter(request):
+    # Без проверки авторизации
     return render(request, 'python_interpreter.html')
 
 @csrf_exempt
 @wrap_view
 def run_python_code(request):
+    # Без проверки авторизации
     if request.method == 'POST':
         code = json.loads(request.body)['code']
         
@@ -365,6 +477,10 @@ def add_student(request):
 
 @wrap_view
 def attendance(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, 'Для просмотра посещаемости необходимо войти в систему.')
+        return redirect('login')
+    
     attendances = Attendance.objects.all().order_by('-date', 'student')
     
     grouped_attendances = []
@@ -483,10 +599,17 @@ def password_reset_request(request):
     return render(request, 'password_reset_request.html', {'form': form})
 
 @wrap_view
-def teacher_resources(request):
-    return render(request, 'teacher_resources.html')
+def about(request):
+    # Доступно всем авторизованным пользователям
+    about_info = AboutPage.objects.first()  # Берем первую запись
+    return render(request, 'about.html', {'about_info': about_info})
 
 @wrap_view
-def about(request):
-    return render(request, 'about.html')
+def teacher_resources(request):
+    # Доступно только активированным учителям
+    if not check_teacher_access(request.user):
+        raise PermissionDenied
+    resources = TeacherResource.objects.all()
+    return render(request, 'teacher_resources.html', {'resources': resources})
+
 

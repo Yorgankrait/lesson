@@ -4,15 +4,22 @@
 <div class="content-container">
     <h1>Полезное для учителей</h1>
     <div class="resources-grid">
-        <div class="resource-card">
-            <h2>Методические материалы</h2>
-            <p>Подборка полезных ресурсов для преподавания программирования</p>
-        </div>
-        <div class="resource-card">
-            <h2>Учебные планы</h2>
-            <p>Примеры учебных планов и программ</p>
-        </div>
-        <!-- Добавьте другие карточки по необходимости -->
+        {% if resources %}
+            {% for resource in resources %}
+                <div class="resource-card">
+                    <h2>{{ resource.title }}</h2>
+                    <p>{{ resource.description }}</p>
+                    {% if resource.link %}
+                        <a href="{{ resource.link }}" target="_blank" class="resource-link">Перейти к ресурсу</a>
+                    {% endif %}
+                    {% if resource.file %}
+                        <a href="{{ resource.file.url }}" class="resource-download">Скачать файл</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Ресурсы пока не добавлены.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

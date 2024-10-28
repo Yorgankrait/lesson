@@ -3,19 +3,23 @@
 {% block content %}
 <div class="content-container">
     <h1>Обо мне</h1>
+    {% if about_info %}
     <div class="about-content">
         <div class="profile-info">
-            <h2>Сергей Жуков</h2>
-            <p>Преподаватель программирования</p>
+            <h2>{{ about_info.name }}</h2>
+            <p>{{ about_info.title }}</p>
             <div class="experience">
                 <h3>Опыт работы</h3>
-                <!-- Добавьте информацию о вашем опыте -->
+                {{ about_info.experience|linebreaks }}
             </div>
             <div class="education">
                 <h3>Образование</h3>
-                <!-- Добавьте информацию об образовании -->
+                {{ about_info.education|linebreaks }}
             </div>
         </div>
     </div>
+    {% else %}
+    <p>Информация пока не добавлена.</p>
+    {% endif %}
 </div>
 {% endblock %}

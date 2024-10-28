@@ -27,16 +27,26 @@
                             <i class="fas fa-bars"></i>
                             <div class="dropdown-menu">
                                 <a href="{% url 'about' %}" class="dropdown-item">Обо мне</a>
-                                <a href="{% url 'teacher_resources' %}" class="dropdown-item">Полезное для учителей</a>
+                                {% if user.is_authenticated and user.userprofile.user_type == 'teacher' and user.userprofile.is_teacher_activated %}
+                                    <a href="{% url 'teacher_resources' %}" class="dropdown-item">Полезное для учителей</a>
+                                {% endif %}
                             </div>
                         </button>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'home' %}" class="nav-button">Главная</a>
                     </li>
-                    <li class="nav-item"><a href="{% url 'students' %}" class="nav-button">Ученики и их проекты</a></li>
-                    <li class="nav-item"><a href="{% url 'lessons' %}" class="nav-button">Учебные материалы</a></li>
-                    <li class="nav-item"><a href="{% url 'python_interpreter' %}" class="nav-button">Python Интерпретатор</a></li>
+                    <li class="nav-item">
+                        <a href="{% url 'students' %}" class="nav-button">Ученики и их проекты</a>
+                    </li>
+                    {% if not user.is_authenticated or user.userprofile.user_type != 'parent' and not user.userprofile.user_type == 'teacher' or user.userprofile.is_teacher_activated or user.userprofile.user_type == 'student' and user.userprofile.is_student_activated %}
+                        <li class="nav-item">
+                            <a href="{% url 'lessons' %}" class="nav-button">Учебные материалы</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a href="{% url 'python_interpreter' %}" class="nav-button">Python Интерпретатор</a>
+                    </li>
                 </ul>
             </nav>
             <div class="content-wrapper {% if request.path != '/' %}full-width{% endif %}" id="mainContent">
@@ -83,7 +93,7 @@
                 </div>
             {% else %}
                 <div class="footer-item">
-                    <a href="{% url 'login' %}" class="footer-button">Вход для учеников/родителей</a>
+                    <a href="{% url 'login' %}" class="footer-button">Вход для пользователей</a>
                 </div>
                 <div class="footer-item registration-button">
                     <a href="{% url 'register' %}" class="footer-button">Регистрация</a>

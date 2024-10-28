@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.dateformat import format
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 def validate_pptx(value):
     if not value.name.lower().endswith('.pptx'):
@@ -104,3 +106,58 @@ class News(models.Model):
     
     def __str__(self):
         return self.title
+
+class AboutPage(models.Model):
+    name = models.CharField('Имя', max_length=100)
+    title = models.CharField('Должность', max_length=200)
+    experience = models.TextField('Опыт работы')
+    education = models.TextField('Образование')
+    updated_at = models.DateTimeField('Последнее обновление', auto_now=True)
+
+    class Meta:
+        verbose_name = 'Страница "Обо мне"'
+        verbose_name_plural = 'Страница "Обо мне"'
+
+    def __str__(self):
+        return f"Информация о {self.name}"
+
+class TeacherResource(models.Model):
+    title = models.CharField('Заголовок', max_length=200)
+    description = models.TextField('Описание')
+    link = models.URLField('Ссылка на ресурс', blank=True, null=True)
+    file = models.FileField('Файл', upload_to='teacher_resources/', blank=True, null=True)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    updated_at = models.DateTimeField('Последнее обновление', auto_now=True)
+
+    class Meta:
+        verbose_name = 'Ресурс для учителей'
+        verbose_name_plural = 'Ресурсы для учителей'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+class UserProfile(models.Model):
+    USER_TYPES = (
+        ('student', 'Ученик'),
+        ('parent', 'Родитель'),
+        ('teacher', 'Учитель'),
+    )
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_type = models.CharField(max_length=10, choices=USER_TYPES)
+    is_teacher_activated = models.BooleanField(default=False)
+    is_student_activated = models.BooleanField(default=False)  # Добавляем поле для активации учеников
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.get_user_type_display()}"
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    if not hasattr(instance, 'userprofile'):
+        UserProfile.objects.create(user=instance)

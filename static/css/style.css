@@ -167,7 +167,7 @@ main {
 
 /* Добавляем стили для случая, когда мы не на главной странице */
 .full-width main {
-    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить обла�� чат-бота */
+    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить обла чат-бота */
     left: -70px; /* Сохраняе левое смещение */
 }
 
@@ -261,7 +261,7 @@ footer {
     transform: none;
 }
 
-/* стальные стили остаются без изменений */
+/* стальные стли остаются без изменений */
 
 /* Добавляем эти стили в конец файла */
 #toggleObjects {
@@ -338,7 +338,7 @@ footer {
     cursor: pointer;
     transition: background-color 0.3s;
     margin: 0 auto;
-    transform: translateX(-52px); /* Сдвигаем влево на 52 пикселя */
+    transform: translateX(-52px); /* Сдвигаем влево н�� 52 пикселя */
 }
 
 .register-button:hover {
@@ -959,9 +959,9 @@ footer {
 }
 
 .dropdown-menu {
-    display: none;
+    display: flex; /* Меняем на постоянное отображение */
     position: absolute;
-    top: calc(100% - 10px); /* Сдвигаем вверх на 10px (было -5px) */
+    top: calc(100% - 10px);
     left: -20px;
     background: none;
     border-radius: 20px;
@@ -974,26 +974,30 @@ footer {
     min-width: auto;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(-10px);
+    pointer-events: none; /* Добавляем, чтобы меню не мешало */
 }
 
 .hamburger-menu:hover .dropdown-menu {
-    display: flex;
     opacity: 1;
     visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto; /* Возвращаем взаимодействие */
 }
 
 .dropdown-menu:hover {
-    display: flex;
     opacity: 1;
     visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .dropdown-item {
     color: white;
     text-decoration: none;
-    padding: 6px 15px; /* Уменьшили с 8px до 6px */
-    transition: background-color 0.3s;
+    padding: 6px 15px;
+    transition: all 0.3s ease-in-out;
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     white-space: nowrap;
@@ -1002,6 +1006,48 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: slideIn 0.3s ease-in-out forwards;
+    animation-delay: calc(var(--item-index) * 0.1s);
+}
+
+/* Анимация исчезновения для элементов меню */
+@keyframes slideOut {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+}
+
+/* Применяем анимацию исчезновения когда меню скрывается */
+.dropdown-menu:not(:hover):not(.hamburger-menu:hover) .dropdown-item {
+    animation: slideOut 0.3s ease-in-out forwards;
+}
+
+/* Добавляем анимацию */
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Задаем индексы для элементов */
+.dropdown-item:nth-child(1) {
+    --item-index: 1;
+}
+
+.dropdown-item:nth-child(2) {
+    --item-index: 2;
 }
 
 .dropdown-item:hover {
@@ -1020,9 +1066,33 @@ footer {
 
 /* Остальные стили остаются без изменений */
 
+.resource-card {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
+.resource-link, .resource-download {
+    display: inline-block;
+    padding: 8px 15px;
+    margin-top: 10px;
+    margin-right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
 
+.resource-link:hover, .resource-download:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
 
-
-
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
 

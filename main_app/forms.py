@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.utils.translation import gettext_lazy as _
-from .models import Lesson, Student, Attendance, Project, News
+from .models import Lesson, Student, Attendance, Project, News, UserProfile
 
 class AttendanceForm(forms.Form):
     date = forms.DateField(
@@ -52,32 +52,40 @@ class NewsForm(forms.ModelForm):
         }
 
 class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(
-        label=_("Email"),
-        required=True,
-        help_text=_("Обязательное поле. Используется для восстановления пароля."),
+    USER_TYPES = (
+        ('student', 'Ученик'),
+        ('parent', 'Родитель'),
+        ('teacher', 'Учитель'),
     )
-    username = forms.CharField(
-        label=_("Имя пользователя"),
-        help_text=_("Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_."),
-        error_messages={
-            'unique': _("Пользователь с таким именем уже существует."),
-        },
-    )
-    password1 = forms.CharField(
-        label=_("Пароль"),
-        widget=forms.PasswordInput,
-        help_text=_("Ваш пароль должен содержать как минимум 8 символов."),
-    )
-    password2 = forms.CharField(
-        label=_("Подтверждение пароля"),
-        widget=forms.PasswordInput,
-        help_text=_("Введите тот же пароль, что и выше, для подтверждения."),
-    )
-
+    
+    user_type = forms.ChoiceField(choices=USER_TYPES, label='Тип пользователя')
+    
     class Meta:
         model = User
-        fields = ("username", "email", "password1", "password2")
+        fields = ('username', 'email', 'password1', 'password2', 'user_type')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+            user_type = self.cleaned_data.get('user_type')
+            
+            # Создаем или получаем профиль пользователя
+            profile, created = UserProfile.objects.get_or_create(user=user)
+            profile.user_type = user_type
+            
+            # Если пользователь выбрал роль учителя, он не активирован по умолчанию
+            if user_type == 'teacher':
+                profile.is_teacher_activated = False
+            
+            profile.save()
+            
+            # Добавляем пользователя в соответствующую группу
+            group_name = user_type.capitalize()
+            group, created = Group.objects.get_or_create(name=group_name)
+            user.groups.add(group)
+            
+        return user
 
 class StudentForm(forms.ModelForm):
     class Meta:
