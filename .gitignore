@@ -19,6 +19,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+venv/
+ENV/
 
 # Django
 *.log
@@ -27,10 +29,6 @@ db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
-
-# Virtual Environment
-venv/
-ENV/
 
 # IDE
 .idea/
@@ -41,3 +39,16 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+
+# Virtual Environment
+venv/
+.env/
+.venv/
+env/
+ENV/
+
+# Project specific
+debug.log
+*.pptx
+*.mp4
+uploads/
