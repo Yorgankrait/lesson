@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Ученики и их проекты{% endblock %}
+
+{% block content %}
+<div class="students-container">
+    <h2>Ученики и их проекты</h2>
+    <div class="student-grid">
+        {% for student in students %}
+        <div class="student-card">
+            <div class="student-avatar">
+                {% if student.avatar %}
+                    <img src="{{ student.avatar.url }}" alt="{{ student.name }}">
+                {% else %}
+                    <div class="avatar-placeholder">{{ student.name|make_list|first }}</div>
+                {% endif %}
+            </div>
+            <div class="student-info">
+                <h3>{{ student.name }}</h3>
+                <p class="project-name">{{ student.project }}</p>
+                <p class="project-description">{{ student.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

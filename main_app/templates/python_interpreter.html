@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Python Интерпретатор{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/theme/dracula.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="interpreter-container">
+    <h2>Python Интерпретатор</h2>
+    <div class="interpreter-wrapper">
+        <textarea id="code" class="code-input"></textarea>
+        <button id="runCode" class="run-button">Выполнить код</button>
+        <div id="output" class="output-area"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/python/python.min.js"></script>
+<script src="{% static 'js/python_interpreter.js' %}"></script>
+{% endblock %}

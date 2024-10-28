@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Уроки{% endblock %}
+
+{% block content %}
+    <h1>Уроки</h1>
+    <a href="{% url 'upload_lesson' %}" class="button">Загрузить файл</a>
+    <ul class="lessons-list">
+        {% for lesson in lessons %}
+            <li>
+                <a href="{% url 'download_lesson' lesson.id %}">{{ lesson.title }}</a>
+                <span class="upload-date">{{ lesson.upload_date|date:"d.m.Y" }}</span>
+                <a href="{% url 'delete_lesson' lesson.id %}" class="button delete-button">Удалить</a>
+            </li>
+        {% empty %}
+            <li>Нет доступных уроков.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

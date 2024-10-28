@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Мой обучающий сайт{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+    <script src="{% static 'js/background.js' %}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div id="background-container">
+        <video autoplay muted loop id="myVideo">
+            <source src="{% static 'videos/background.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+    <button id="prevBackground" class="background-arrow left-arrow">&lt;</button>
+    <button id="nextBackground" class="background-arrow right-arrow">&gt;</button>
+    <div id="content-container">
+        <div class="content">
+            <nav>
+                <ul>
+                    <li class="nav-item">
+                        <a href="{% url 'home' %}" class="nav-button">Главная</a>
+                    </li>
+                    <li class="nav-item"><a href="{% url 'students' %}" class="nav-button">Ученики и их проекты</a></li>
+                    <li class="nav-item"><a href="{% url 'lessons' %}" class="nav-button">Учебные материалы</a></li>
+                    <li class="nav-item"><a href="{% url 'python_interpreter' %}" class="nav-button">Python Интерпретатор</a></li>
+                </ul>
+            </nav>
+            <div class="content-wrapper {% if request.path != '/' %}full-width{% endif %}" id="mainContent">
+                <main>
+                    {% block content %}
+                    {% endblock %}
+                </main>
+                {% if request.path == '/' %}
+                <div class="chatbot">
+                    <div class="chatbot-window">
+                        <div class="chatbot-header">Ассистент Кеша</div>
+                        <div class="chatbot-messages" id="chatbotMessages"></div>
+                        <div class="chatbot-input">
+                            <input type="text" id="chatbotInput" placeholder="Задайте вопрос Кеше...">
+                            <button id="chatbotSend">Отправить</button>
+                            {% if user.is_authenticated %}
+                            <button id="chatbotClear">Очистить чат</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-item">
+                <a href="{% url 'admin:index' %}" class="footer-button">Вход для администратора</a>
+            </div>
+            <div class="footer-item">
+                <a href="{% url 'attendance' %}" class="footer-button">Посещаемость занятий учениками</a>
+            </div>
+            <div class="footer-item">
+                <a href="#" id="toggleObjects" class="footer-button">Скрыть все объекты</a>
+            </div>
+            {% if user.is_authenticated %}
+                <div class="footer-item" id="userInfo">
+                    <span class="username">{{ user.username }}</span>
+                    <span class="status-dot"></span>
+                </div>
+                <div class="footer-item">
+                    <a href="{% url 'logout' %}" class="footer-button">Выход</a>
+                </div>
+            {% else %}
+                <div class="footer-item">
+                    <a href="{% url 'login' %}" class="footer-button">Вход для учеников/родителей</a>
+                </div>
+                <div class="footer-item registration-button">
+                    <a href="{% url 'register' %}" class="footer-button">Регистрация</a>
+                </div>
+            {% endif %}
+        </div>
+    </footer>
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    <script src="{% static 'js/chatbot.js' %}"></script>
+</body>
+</html>

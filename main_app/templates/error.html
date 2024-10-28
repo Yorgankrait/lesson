@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="error-container">
+    <h2>Ошибка</h2>
+    <p>{{ error_message }}</p>
+    <a href="{% url 'lessons' %}" class="button">Вернуться к урокам</a>
+</div>
+{% endblock %}

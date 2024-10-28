@@ -1,0 +1,910 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+#background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+#myVideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+#content-container {
+    position: relative;
+    z-index: 1;
+    width: 100%; /* Изменяем фиксированную ширину на 100% */
+    max-width: 1200px; /* Добавляем максимальную ширину */
+    margin: 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.background-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 3;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-arrow {
+    left: 5px;
+}
+
+.right-arrow {
+    right: 5px;
+}
+
+nav {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 10px 0;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: none;
+    z-index: 10;
+    height: 60px;
+}
+
+nav ul {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between; /* Изменено с flex-start на space-between */
+    align-items: center;
+    list-style-type: none;
+    height: 100%;
+}
+
+.nav-item {
+    margin: 0;
+    flex: 1; /* Добавлено для равномерного распределения */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Обновляем общие стили для кнопок навигации и футера */
+.nav-button, .footer-button {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: background-color 0.3s, opacity 0.3s;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    border: none;
+    cursor: pointer;
+    min-width: min-content;
+    height: auto;
+    margin: 0 5px;
+}
+
+.nav-button:hover, .footer-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Обновляем стили для элементов навигации и футера */
+.nav-item, .footer-item {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex: 0 1 auto;
+}
+
+/* Обновляем стили для контейнеров навигации и футера */
+nav ul, .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0 10px;
+    height: 100%;
+}
+
+.content-wrapper {
+    position: relative;
+    height: calc(100vh - 130px);
+    margin: 60px auto 70px;
+    max-width: 100%;
+    width: 100%;
+}
+
+main {
+    position: absolute;
+    top: 20px;
+    left: -70px;
+    width: calc(100% - 240px);
+    height: calc(100% - 40px);
+    padding: 18px;
+    overflow-y: auto;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+}
+
+/* Добавляем стили для случая, когда мы не на главной странице */
+.full-width main {
+    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить область чат-бота */
+    left: -70px; /* Сохраняе левое смещение */
+}
+
+.chatbot {
+    position: absolute;
+    top: 20px;
+    right: -70px;
+    width: 370px;
+    height: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+}
+
+.chatbot-window {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chatbot-header {
+    padding: 10px;
+    background-color: rgba(76, 175, 80, 0.8);
+    color: white; /* Изменяем цвет текста на белый */
+    text-align: center;
+}
+
+.chatbot-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    color: white; /* Добавляем белый цвет для текста сообщений */
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 10px;
+}
+
+#chatbotInput {
+    flex-grow: 1;
+    margin-right: 5px;
+}
+
+#chatbotSend, #chatbotClear {
+    padding: 5px 10px;
+    border-radius: 15px; /* Закругляем кнопки чат-бота */
+    background-color: rgba(0, 0, 0, 0.5); /* Добавляем черный полупрозрачный фон */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#chatbotSend:hover, #chatbotClear:hover {
+    background-color: rgba(0, 0, 0, 0.7); /* Де��ем фон темнее при наведении */
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    padding: 10px 0;
+    box-sizing: border-box;
+    z-index: 10;
+    height: 70px;
+    transform: none;
+}
+
+/* стальные стили остаются без изменений */
+
+/* Добавляем эти стили в конец файла */
+#toggleObjects {
+    text-decoration: none;
+    /* Удаляем color: inherit, так как цвет уже определен в .footer-button */
+}
+
+/* Добавляем стили для формы регистрации */
+.register-container {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центрирование по вертикали */
+    align-items: center; /* Центрирование по горизонтали */
+}
+
+.register-container h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 24px;
+}
+
+.register-table {
+    width: 80%;
+    max-width: 600px;
+    border-collapse: collapse;
+    margin: 0;
+    /* Удаляем красные границы */
+}
+
+.register-table td {
+    padding: 10px;
+    vertical-align: top;
+    position: relative;
+    top: 0;
+    /* Удаляем красные границы */
+}
+
+.register-table td:first-child {
+    width: 40%;
+    text-align: right;
+    padding-right: 20px;
+    vertical-align: top;
+    white-space: nowrap; /* Предотвращаем перенос текста */
+}
+
+.register-table input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.register-table input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Обновляем стили для кнопки регистрации */
+.register-button {
+    width: auto;
+    min-width: 200px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 0 auto;
+    transform: translateX(-52px); /* Сдвигаем влево на 52 пикселя */
+}
+
+.register-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Стили для сообщений об ошибках */
+.register-table .errorlist {
+    color: #ff6b6b;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+/* Добавляем стили для фр�� входа */
+.login-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    color: #4CAF50;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.login-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover {
+    background-color: #45a049;
+}
+
+.login-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.login-links a {
+    color: #4CAF50;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.login-links a:hover {
+    text-decoration: underline;
+}
+
+.students-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+}
+
+.students-container h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 32px;
+    color: #4CAF50;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.student-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.student-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.student-avatar {
+    width: 100%;
+    height: 150px;
+    background-color: #4CAF50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.student-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    font-size: 48px;
+    color: white;
+}
+
+.student-info {
+    padding: 15px;
+}
+
+.student-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #4CAF50;
+}
+
+.project-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.project-description {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.attendance-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+}
+
+.attendance-container h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 32px;
+    color: #4CAF50;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.month-container {
+    margin-bottom: 40px;
+}
+
+.month-container h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #FFA500;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.calendar-day {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.calendar-day:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.calendar-day.present {
+    background-color: rgba(76, 175, 80, 0.3);
+}
+
+.calendar-day.absent {
+    background-color: rgba(244, 67, 54, 0.3);
+}
+
+.calendar-day.no-class {
+    background-color: rgba(128, 128, 128, 0.3);
+}
+
+.day-number {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.student-name {
+    display: block;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.attendance-status {
+    display: block;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container input, .form-container select {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.form-container button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+    background-color: #45a049;
+}
+
+.attendance-menu {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.menu-button {
+    padding: 12px 20px;
+    margin: 0 10px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 2px solid #4CAF50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.menu-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.menu-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #45a049;
+}
+
+/* Добавьте эти стили в конец файла style.css */
+
+.interpreter-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+.interpreter-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #4CAF50;
+}
+
+.interpreter-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.CodeMirror {
+    height: 300px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.run-button {
+    align-self: flex-end;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.run-button:hover {
+    background-color: #45a049;
+}
+
+.output-area {
+    width: 100%;
+    min-height: 100px;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace;
+}
+
+/* Добавьте эти стили в конец файла style.css */
+
+.lessons-container {
+    width: 100%;
+    max-width: 1200px; /* Увеличиваем максимальную ширину с 800px до 1200px */
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+.lessons-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #4CAF50;
+}
+
+.lessons-menu {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.lessons-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Фиксированные 3 колонки вместо auto-fill */
+    gap: 20px;
+}
+
+.lesson-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 300px; /* Минимальная ширина карточки */
+}
+
+.lesson-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.lesson-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #4CAF50;
+}
+
+.lesson-date {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 15px;
+}
+
+/* Обновляем стили для контейнера кнопок */
+.lesson-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Три колонки равной ширины */
+    gap: 10px; /* Отступ между кнопками */
+    width: 100%;
+}
+
+/* Обновляем стили для кнопок */
+.action-button {
+    padding: 8px 0; /* Вертикальные отступы */
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    text-align: center;
+    width: 100%; /* Кнопка занимает всю ширину своей колонки */
+    display: inline-block;
+}
+
+.view-button {
+    background-color: #4CAF50;
+}
+
+.download-button {
+    background-color: #2196F3;
+}
+
+.delete-button {
+    background-color: #f44336;
+}
+
+.action-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.action-button:active {
+    transform: translateY(0);
+}
+
+.no-lessons {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    max-width: 80%;
+}
+
+.user-message {
+    background-color: rgba(255, 255, 255, 0.2);
+    align-self: flex-end;
+    color: white; /* Добавляем белый цвет для текста пользователя */
+}
+
+.bot-message {
+    background-color: rgba(76, 175, 80, 0.6);
+    align-self: flex-start;
+    color: white; /* Добавляем белый цвет для текста бота */
+}
+
+#userInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.username {
+    color: white;
+    font-size: 16px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #00ff00;
+    border-radius: 50%;
+    display: inline-block;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.welcome-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.welcome-section h1 {
+    color: white;
+    font-size: 32px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.welcome-section p {
+    color: white;
+    font-size: 18px;
+    line-height: 1.6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.news-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.news-card {
+    border: 2px solid #4CAF50;  /* Зеленая рамка */
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.2); /* Мягкое зеленое свечение */
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+    border-color: #45a049; /* Более темный зеленый при наведении */
+}
+
+.news-card h2 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+    font-size: 24px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.news-meta {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.news-content {
+    color: white;
+    line-height: 1.6;
+}
+
+.news-date {
+    display: inline-block;
+    padding: 3px 8px;
+    background-color: rgba(76, 175, 80, 0.3);
+    border-radius: 4px;
+    border: 1px solid rgba(76, 175, 80, 0.5);
+}

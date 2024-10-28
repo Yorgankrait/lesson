@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Посещаемость занятий{% endblock %}
+
+{% block content %}
+    <h1>Посещаемость занятий учениками</h1>
+    
+    <h2>Обновить посещаемость</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button">Обновить посещаемость</button>
+    </form>
+    
+    <div class="attendance-container">
+        {% for date, attendances in grouped_attendances %}
+            <h3>{{ date|date:"d.m.Y" }}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ученик</th>
+                        <th>Присутствие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attendance in attendances %}
+                        <tr>
+                            <td>{{ attendance.student }}</td>
+                            <td class="{% if attendance.present %}present{% else %}absent{% endif %}">
+                                {% if attendance.present %}Присутствовал{% else %}Отсутствовал{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if not forloop.last %}
+                <div class="spacer"></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

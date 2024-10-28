@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавить ученика{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Добавить нового ученика</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+    <a href="{% url 'attendance' %}" class="back-button">Вернуться назад</a>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Вход для учеников/родителей{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2>Вход для учеников/родителей</h2>
+    <form method="post" id="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" name="username" id="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+        <button type="submit" class="login-button">Войти</button>
+    </form>
+    <div class="login-links">
+        <a href="{% url 'password_reset' %}">Забыли пароль?</a>
+        <a href="{% url 'register' %}">Зарегистрироваться</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/auto_login.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Уроки{% endblock %}
+
+{% block content %}
+    <h2>Учебные материалы</h2>
+    <div class="attendance-container">
+        <ul class="lessons-list">
+            {% for lesson in lessons %}
+                <li>
+                    <a href="{% url 'view_lesson' lesson.id %}">{{ lesson.title }}</a>
+                    <span class="upload-date">{{ lesson.formatted_date }}</span>
+                    <a href="{% url 'download_lesson' lesson.id %}" class="download-button">Скачать</a>
+                </li>
+            {% empty %}
+                <li>Нет доступных уроков.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

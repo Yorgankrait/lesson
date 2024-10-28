@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>{{ lesson.title }}</h2>
+<div class="lesson-viewer">
+    {% for slide in slides %}
+        <div class="slide">
+            <img src="{{ slide }}" alt="Слайд {{ forloop.counter }}" style="width: 100%; height: auto;">
+        </div>
+    {% endfor %}
+</div>
+<a href="{% url 'download_lesson' lesson.id %}" class="button">Скачать презентацию</a>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Отметить посещаемость{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Отметить посещаемость</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.date.label_tag }} {{ form.date }}
+        <br><br>
+        {{ form.no_class.label_tag }} {{ form.no_class }}
+        <br><br>
+        <div id="student-list">
+            {{ form.students.label_tag }}
+            {{ form.students }}
+        </div>
+        <button type="submit">Отметить</button>
+    </form>
+    <a href="{% url 'attendance' %}" class="back-button">Вернуться назад</a>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var noClassCheckbox = document.getElementById('id_no_class');
+        var studentList = document.getElementById('student-list');
+
+        noClassCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                studentList.style.display = 'none';
+            } else {
+                studentList.style.display = 'block';
+            }
+        });
+    });
+</script>
+{% endblock %}

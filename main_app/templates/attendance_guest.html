@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Посещаемость занятий{% endblock %}
+
+{% block content %}
+    <h1>Посещаемость занятий учениками</h1>
+    <p>Пожалуйста, зарегистрируйтесь или войдите в систему, чтобы просмотреть посещаемость.</p>
+    <a href="{% url 'register' %}" class="button">Регистрация</a>
+    <a href="{% url 'login' %}" class="button">Вход</a>
+{% endblock %}

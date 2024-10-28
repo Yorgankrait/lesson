@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - Обучение программированию на Python{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1>Здравствуйте! Я преподаватель программирования, и моя миссия - открыть увлекательный мир Python для ваших детей</h1>
+    <p>Этот сайт создан как полезный ресурс для моих учеников и их родителей.</p>
+</div>
+
+<div class="news-section">
+    {% for news_item in news %}
+    <div class="news-card">
+        <h2>{{ news_item.title }}</h2>
+        <div class="news-meta">
+            <span class="news-date">{{ news_item.created_at|date:"d.m.Y H:i" }}</span>
+        </div>
+        <div class="news-content">
+            {{ news_item.content|linebreaks }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
