@@ -114,7 +114,9 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 
 # Настройка для предотвращения утечки семафоров
 if __name__ != '__main__':
-    multiprocessing.set_start_method('fork')
+    import platform
+    if platform.system() != 'Windows':  # Только для Unix-подобных систем
+        multiprocessing.set_start_method('fork')
 
 CACHES = {
     'default': {
