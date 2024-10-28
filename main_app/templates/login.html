@@ -6,7 +6,7 @@
 {% block content %}
 <div class="login-container">
     <h2>Вход для пользователей</h2>
-    <form method="post" class="login-form">
+    <form method="post" class="login-form" id="login-form">
         {% csrf_token %}
         <div class="form-group">
             <label for="username">Имя пользователя:</label>

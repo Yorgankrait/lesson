@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate
-from .models import Lesson, Attendance, ChatMessage, Student, UnknownQuestion, News, AboutPage, TeacherResource
+from .models import Lesson, Attendance, ChatMessage, Student, UnknownQuestion, News, AboutPage, TeacherResource, UserIdea
 from .forms import LessonForm, CustomUserCreationForm, ExcelUploadForm, AttendanceForm, StudentForm
 import pandas as pd
 import os
@@ -129,11 +129,14 @@ def chat_message(request):
     if not request.user.is_authenticated:
         return JsonResponse({
             'status': 'success', 
-            'message': ('Для общения со мной необходимо зарегистрироваться. '
-                       'Без регистрации вам доступны только Python Интерпретатор '
-                       'и информация обо мне в выпадающем меню. '
-                       'Пожалуйста, зарегистрируйтесь или войдите в систему, '
-                       'чтобы получить доступ ко всем функциям сайта.')
+            'message': ('Здравствуйте! Я помогу вам разобраться с сайтом.\n\n'
+                       'Сейчас вам доступны:\n'
+                       '- Python Интерпретатор\n'
+                       '- Просмотр информации "Обо мне"\n\n'
+                       'Чтобы получить полный доступ ко всем функциям сайта, пожалуйста, '
+                       'зарегистрируйтесь или войдите в систему.\n\n'
+                       'Для регистрации нажмите кнопку "Регистрация" внизу страницы.\n'
+                       'Для входа нажмите "Вход для пользователей".')
         })
     
     if request.method == 'POST':
@@ -144,121 +147,49 @@ def chat_message(request):
             # Сохраняем сообщение пользователя
             ChatMessage.objects.create(user=request.user, message=message, is_bot=False)
             
-            # Расширенные ответы бота
-            responses = {
-                # Приветствия и прощания
-                'привет': 'Здравствуйте! Я помогу вам разобраться с сайтом. Спросите меня о любом разделе: главная, ученики, материалы, интерпретатор.',
-                'пока': 'До свидания! Буду рад помочь снова!',
-                'как дела': 'У меня всё хорошо, готов помогать! Что вас интересует?',
-                
-                # Описание разделов
-                'главная': 'На главно сранице вы найдете общую информацию о нашем обучающем проекте и меня - вашего помощника по сайту.',
-                'ученики': 'В разделе "Ученики и их проекты" вы можете увидеть работы наших учеников, их достижения и проекты, которые они создали во время обучения.',
-                'материаы': 'В аздале "Учебные материалы" собраны все презентации и уроки по программированию. Вы можете просматривать их онлайн или скачивать.',
-                'интерпретатор': 'Python Интерпретатор позволяет писать и выполнять код прямо в браузере. Отличный инструмент для практики!',
-                
-                # Дополнительные функции
-                'посещаемость': 'В разделе "Посещаемость" можно отслеживать присутствие учеников на занятиях. Достпно для преподавателей и родителей.',
-                'регистраця': 'Чтобы зарегистрироваться на сайте, нажмите кнопку "Регистрация" внизу страницы и заполните форму.',
-                'вход': 'Для входа на сайт используйте кнопку "Вход для учеников/родителей" в нижней части страницы.',
-                'админ': 'Вход для администратора доступен по соответствующей кнопке в футере сайта.',
-                
-                # Помощь
-                'помощь': 'Я могу ассказать о любом разделе сайта. Спро��ите меня о: главная, ученики, материалы, интерпретатор, посещаемость, регистрация, вход.',
-                'что ты умеешь': 'Я могу рассказать о разных частях сайта, помочь с навигацией и ответить на базовые вопросы. Спросите меня о конкетном разделе!',
-                
-                # Дополнительые ключевые слова
-                'проекты': 'Проекты учеников можно посмотреть в разделе "Ученики и их проекты". Там предствлены их лучшие работы.',
-                'уроки': 'Все уроки доступны в разделе "Учебные материалы". Они представлены в виде презентаций, которые можно просматривать онлайн.',
-                'код': 'Вы можете писать и тестировать код в разделе "Python Интерпретатор". Он поддерживает все базовые функции Python.',
-                
-                # Информация о правах доступа
-                'права': ('Давайте я расскажу о правах доступа:\n\n'
-                         '1. Неавторизованный пользователь:\n'
-                         '- Доступ к Python интерпретатору\n'
-                         '- Просмотр информации "Обо мне"\n\n'
-                         '2. Ученик (до активации администратором):\n'
-                         '- Все функции неавторизованного пользователя\n'
-                         '- Просмотр учеников и их проектов\n'
-                         '- Просмотр посещаемости\n'
-                         '- Общение со мной\n\n'
-                         '3. Ученик (после активации администратором):\n'
-                         '- Все функции неавторизованного пользователя\n'
-                         '- Доступ к учебным материалам\n'
-                         '- Просмотр учеников и их проектов\n'
-                         '- Просмотр посещаемости\n'
-                         '- Общение со мной\n\n'
-                         '4. Родитель:\n'
-                         '- Все функции неавторизованного пользователя\n'
-                         '- Просмотр учеников и их проектов\n'
-                         '- Просмотр посещаемости\n'
-                         '- Общение со мной\n\n'
-                         '5. Учитель (до активации администратором):\n'
-                         '- Те же права, что и у родителя\n\n'
-                         '6. Учитель (после активации администратором):\n'
-                         '- Все функции неавторизованного пользователя\n'
-                         '- Доступ к учебным материалам\n'
-                         '- Просмотр учеников и их проектов\n'
-                         '- Просмотр посещаемости\n'
-                         '- Доступ к разделу "Полезное для учителей"\n'
-                         '- Общение со мной'),
-                
-                'доступ': 'Чтобы узнать о правах доступа разных пользователей, напишите "права"',
-                'что могут': 'Чтобы узнать о возможностях разных пользователей, напишите "права"',
-                'возможности': 'Чтобы узнать о возможностях разных пользователей, напишите "права"',
-                
-                'учитель': ('Учетная запись учителя создается при регистрации, '
-                           'но для получения полного доступа требуется активация администратором. '
-                           'До активации доступны те же функции, что и у родителя. '
-                           'После активации появляется доступ к учебным материалам и '
-                           'разделу "Полезное для учителей"'),
-                
-                'ученик': ('Ученику доступны: Python интерпретатор, учебные материалы, '
-                          'просмотр учеников и их проектов, просмотр посещаемости, '
-                          'общение со мной'),
-                
-                'родитель': ('Родителю доступны: Python интерпретатор, '
-                            'просмотр учеников и их проектов, просмотр посещаемости, '
-                            'общение со мной'),
-            }
-            
-            # Поиск ответа в стандартных ответх
-            bot_response = None
-            for key in responses:
-                if key in message:
-                    bot_response = responses[key]
-                    break
-            
-            # Если стандартный ответ не найден
-            if not bot_response:
-                # Ищем похожие вопросы в базе (используем icontains дл нечеткого поиска)
-                similar_questions = UnknownQuestion.objects.filter(
-                    question__icontains=message
+            # Проверяем, ожидает ли пользователь ввода идеи
+            if 'waiting_for_idea' in request.session:
+                # Создаем новую идею
+                UserIdea.objects.create(
+                    user=request.user,
+                    idea=message
                 )
+                # Удаляем флаг ожидания
+                del request.session['waiting_for_idea']
+                bot_response = 'Спасибо за вашу идею! Я передал её администратору.'
+                ChatMessage.objects.create(user=request.user, message=bot_response, is_bot=True)
+                return JsonResponse({'status': 'success', 'message': bot_response})
+            
+            # Сначала проверяем, есть ли ответ в базе отвеченных вопросов
+            answered_question = UnknownQuestion.objects.filter(
+                question__iexact=message,
+                is_answered=True,
+                answer__isnull=False
+            ).first()
+            
+            if answered_question:
+                bot_response = answered_question.answer
+            else:
+                # Поиск ответа в стандартных ответах
+                bot_response = None
+                for key in responses:
+                    if key in message:
+                        bot_response = responses[key]
+                        if key == 'предложить идею':
+                            request.session['waiting_for_idea'] = True
+                        break
                 
-                # Если найден отвеченны вопрос, используем его ответ
-                answered_question = similar_questions.filter(is_answered=True).first()
-                if answered_question and answered_question.answer:
-                    bot_response = answered_question.answer
-                
-                # Если похожий вопрос уже есть, но без ответа
-                elif similar_questions.exists():
-                    bot_response = ('Этот вопрос уже передан админитратору и скоро будет отвечен. '
-                                  'А пока я могу рассказать о разделах сайта - '
-                                  'спросите меня о: главная, ученики, материалы, '
-                                  'интерпретатор, или напишите "помощь".')
-                
-                # Если это совершенно новый вопрос
-                else:
+                # Если ответ не найден, сохраняем вопрос в базе
+                if bot_response is None:
                     UnknownQuestion.objects.create(
                         user=request.user,
-                        question=message
+                        question=message,
+                        is_answered=False
                     )
-                    bot_response = ('Я пока не знаю ответа на этот вопрос, '
-                                  'но я передам его администратору. '
-                                  'А поа огу рассказать о разделх сайта - '
-                                  'спросите меня о: главная, ученики, материалы, '
-                                  'интерпретатор, или напишите "помощь".')
+                    bot_response = ('Извините, я пока не знаю ответа на этот вопрос. '
+                                  'Я передал ваш вопрос администратору. '
+                                  'Попробуйте спросить о конкретном разделе сайта '
+                                  'или напишите "помощь" для получения списка доступных команд.')
             
             # Сохраняем ответ бота
             ChatMessage.objects.create(user=request.user, message=bot_response, is_bot=True)
@@ -478,7 +409,7 @@ def add_student(request):
 @wrap_view
 def attendance(request):
     if not request.user.is_authenticated:
-        messages.warning(request, 'Для просмотра посещаемости необходимо войти в систему.')
+        messages.warning(request, 'Для просмотра псещаемости необходимо войти в систему.')
         return redirect('login')
     
     attendances = Attendance.objects.all().order_by('-date', 'student')
@@ -552,7 +483,7 @@ def password_reset_request(request):
             try:
                 user = User.objects.get(username=username, email=email)
                 
-                # Если пользователь найден и есть новый пароль в запросе
+                # Если пользоватль найден и есть новый пароль в запросе
                 if 'new_password1' in request.POST and 'new_password2' in request.POST:
                     new_password1 = request.POST['new_password1']
                     new_password2 = request.POST['new_password2']
@@ -562,7 +493,7 @@ def password_reset_request(request):
                         return render(request, 'password_reset_form.html', {'user_found': True})
                     
                     if len(new_password1) < 8:
-                        messages.error(request, 'Пароль должен содержать минимум 8 символов!')
+                        messages.error(request, 'Пароль должен содержать минимум 8 символо!')
                         return render(request, 'password_reset_form.html', {'user_found': True})
                     
                     try:
@@ -611,5 +542,13 @@ def teacher_resources(request):
         raise PermissionDenied
     resources = TeacherResource.objects.all()
     return render(request, 'teacher_resources.html', {'resources': resources})
+
+
+
+
+
+
+
+
 
 

@@ -161,3 +161,17 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     if not hasattr(instance, 'userprofile'):
         UserProfile.objects.create(user=instance)
+
+class UserIdea(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    idea = models.TextField('Идея')
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    is_reviewed = models.BooleanField('Просмотрено', default=False)
+
+    class Meta:
+        verbose_name = 'Идея пользователя'
+        verbose_name_plural = 'Идеи пользователей'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Идея от {self.user.username}"

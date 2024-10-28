@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lesson, ChatMessage, Student, Attendance, UnknownQuestion, Project, News, AboutPage, TeacherResource, UserProfile
+from .models import Lesson, ChatMessage, Student, Attendance, UnknownQuestion, Project, News, AboutPage, TeacherResource, UserProfile, UserIdea
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
@@ -117,3 +117,10 @@ class UserProfileAdmin(admin.ModelAdmin):
         updated = queryset.filter(user_type='student').update(is_student_activated=False)
         self.message_user(request, f'Деактивировано {updated} учеников')
     deactivate_students.short_description = "Деактивировать выбранных учеников"
+
+@admin.register(UserIdea)
+class UserIdeaAdmin(admin.ModelAdmin):
+    list_display = ('user', 'idea', 'created_at', 'is_reviewed')
+    list_filter = ('is_reviewed', 'created_at')
+    search_fields = ('user__username', 'idea')
+    readonly_fields = ('created_at',)
