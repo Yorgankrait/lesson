@@ -147,6 +147,21 @@ def chat_message(request):
             # Сохраняем сообщение пользователя
             ChatMessage.objects.create(user=request.user, message=message, is_bot=False)
             
+            # Специальная команда для администратора
+            if request.user.is_superuser and message == 'что нового':
+                # Получаем непросмотренные идеи
+                unreviewed_ideas = UserIdea.objects.filter(is_reviewed=False).order_by('-created_at')
+                
+                if unreviewed_ideas.exists():
+                    bot_response = 'Новые идеи от пользователей:\n\n'
+                    for idx, idea in enumerate(unreviewed_ideas, 1):
+                        bot_response += f"{idx}. От пользователя {idea.user.username} ({idea.created_at.strftime('%d.%m.%Y %H:%M')}):\n{idea.idea}\n\n"
+                else:
+                    bot_response = 'Новых непросмотренных идей пока нет.'
+                
+                ChatMessage.objects.create(user=request.user, message=bot_response, is_bot=True)
+                return JsonResponse({'status': 'success', 'message': bot_response})
+            
             # Проверяем, ожидает ли пользователь ввода идеи
             if 'waiting_for_idea' in request.session:
                 # Создаем новую идею
@@ -194,7 +209,9 @@ def chat_message(request):
                 # Команда для предложения идеи
                 'предложить идею': 'Конечно, я передам вашу идею администратору, опишите её',
                 
-                # ... остальные ответы остаются без изменений ...
+                # Добавляем информацию о команде для администратора
+                'команды админа': ('Доступные команды для администратора:\n'
+                                 '- "что нового" - просмотр непросмотренных идей пользователей'),
             }
             
             # Сначала проверяем, есть ли ответ в базе отвеченных вопросов
@@ -579,6 +596,7 @@ def teacher_resources(request):
         raise PermissionDenied
     resources = TeacherResource.objects.all()
     return render(request, 'teacher_resources.html', {'resources': resources})
+
 
 
 
