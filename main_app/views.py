@@ -81,7 +81,7 @@ def chat_message(request):
             data = json.loads(request.body)
             message = data.get('message').lower()
             
-            # Сохраняем сообщ��ние пользователя
+            # Сохраняем сообщние пользователя
             ChatMessage.objects.create(user=request.user, message=message, is_bot=False)
             
             # Расширенные ответы бота
@@ -185,10 +185,18 @@ def view_lesson(request, lesson_id):
             draw = ImageDraw.Draw(img)
             
             try:
-                title_font = ImageFont.truetype("/Library/Fonts/Arial Bold.ttf", 32)
-                content_font = ImageFont.truetype("/Library/Fonts/Arial.ttf", 24)
-                code_font = ImageFont.truetype("/Library/Fonts/Courier New.ttf", 20)
-            except IOError:
+                # Определяем систему и выбираем соответствующие шрифты
+                if os.name == 'nt':  # Windows
+                    title_font = ImageFont.truetype("C:\\Windows\\Fonts\\Arial.ttf", 32)
+                    content_font = ImageFont.truetype("C:\\Windows\\Fonts\\Arial.ttf", 24)
+                    code_font = ImageFont.truetype("C:\\Windows\\Fonts\\Consola.ttf", 20)
+                else:  # macOS/Linux
+                    title_font = ImageFont.truetype("/Library/Fonts/Arial Bold.ttf", 32)
+                    content_font = ImageFont.truetype("/Library/Fonts/Arial.ttf", 24)
+                    code_font = ImageFont.truetype("/Library/Fonts/Courier New.ttf", 20)
+            except IOError as e:
+                logger.error(f"Font loading error: {str(e)}")
+                # Если не удалось загрузить системные шрифты, используем дефолтный
                 title_font = ImageFont.load_default()
                 content_font = ImageFont.load_default()
                 code_font = ImageFont.load_default()
@@ -198,6 +206,10 @@ def view_lesson(request, lesson_id):
                 if hasattr(shape, 'text'):
                     text = shape.text.strip()
                     if text:
+                        # Явно указываем кодировку для Windows
+                        if os.name == 'nt':
+                            text = text.encode('utf-8').decode('utf-8')
+                            
                         if shape.name == 'Title':
                             text_width = draw.textbbox((0, 0), text, font=title_font)[2]
                             x_position = (960 - text_width) / 2
@@ -254,6 +266,7 @@ def view_lesson(request, lesson_id):
         return render(request, 'view_lesson.html', context)
     
     except Exception as e:
+        logger.error(f'Error in view_lesson: {str(e)}')
         error_message = f'Ошибка при открытии презентации: {str(e)}'
         return render(request, 'error.html', {'error_message': error_message})
 
