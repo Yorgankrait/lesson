@@ -55,4 +55,9 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('keshagpt/', views.keshagpt_view, name='keshagpt'),
     path('keshagpt/<str:feature>/', views.keshagpt_view, name='keshagpt_feature'),
+    path('teacher-articles/', views.teacher_articles_list, name='teacher_articles_list'),
+    path('teacher-articles/create/', views.create_teacher_article, name='create_teacher_article'),
+    path('teacher-articles/<int:pk>/', views.teacher_article_detail, name='teacher_article_detail'),
+    path('teacher-articles/<int:pk>/edit/', views.edit_teacher_article, name='edit_teacher_article'),
+    path('teacher-articles/<int:pk>/delete/', views.delete_teacher_article, name='delete_teacher_article'),
 ]

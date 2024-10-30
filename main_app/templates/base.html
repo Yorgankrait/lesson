@@ -29,7 +29,7 @@
                             <div class="dropdown-menu">
                                 <a href="{% url 'about' %}" class="dropdown-item">Обо мне</a>
                                 {% if user.is_authenticated and user.is_superuser or user.userprofile.user_type == 'teacher' and user.userprofile.is_teacher_activated %}
-                                    <a href="{% url 'teacher_resources' %}" class="dropdown-item">Полезное для учителей</a>
+                                    <a href="{% url 'teacher_articles_list' %}" class="dropdown-item">Полезное для учителей</a>
                                     <a href="{% url 'keshagpt' %}" class="dropdown-item">
                                         <i class="fas fa-robot"></i> KeshaGPT
                                     </a>

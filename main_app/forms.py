@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 from django.utils.translation import gettext_lazy as _
-from .models import Lesson, Student, Attendance, Project, News, UserProfile
+from .models import Lesson, Student, Attendance, Project, News, UserProfile, TeacherArticle, TeacherResource, ArticleImage
 
 class AttendanceForm(forms.Form):
     date = forms.DateField(
@@ -109,3 +109,27 @@ class ExcelUploadForm(forms.Form):
 class PasswordResetRequestForm(forms.Form):
     username = forms.CharField(label="Имя пользователя")
     email = forms.EmailField(label="Email")
+
+class TeacherArticleForm(forms.ModelForm):
+    class Meta:
+        model = TeacherArticle
+        fields = ['title', 'is_published']
+        labels = {
+            'title': 'Заголовок',
+            'is_published': 'Опубликовать'
+        }
+
+class TeacherResourceForm(forms.ModelForm):
+    class Meta:
+        model = TeacherResource
+        fields = ['title', 'description', 'file']
+        labels = {
+            'title': 'Название файла',
+            'description': 'Описание',
+            'file': 'Файл'
+        }
+
+class ArticleImageForm(forms.ModelForm):
+    class Meta:
+        model = ArticleImage
+        fields = ['image']

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import json
 
 def validate_pptx(value):
     if not value.name.lower().endswith('.pptx'):
@@ -123,7 +124,7 @@ class AboutPage(models.Model):
 
 class TeacherArticle(models.Model):
     title = models.CharField('Заголовок', max_length=200)
-    content = models.TextField('Содержание')
+    content = models.TextField('Содержание', blank=True)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Последнее обновление', auto_now=True)
     is_published = models.BooleanField('Опубликовано', default=True)
@@ -135,6 +136,15 @@ class TeacherArticle(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_content(self):
+        try:
+            content = json.loads(self.content)
+            if isinstance(content, (list, tuple)):
+                return content
+            return []
+        except:
+            return []
 
 class TeacherResource(models.Model):
     article = models.ForeignKey(TeacherArticle, on_delete=models.CASCADE, related_name='resources', verbose_name='Статья')
@@ -203,3 +213,12 @@ class UserIdea(models.Model):
 
     def __str__(self):
         return f"Идея от {self.user.username}"
+
+class ArticleImage(models.Model):
+    article = models.ForeignKey(TeacherArticle, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='article_images/')
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order']

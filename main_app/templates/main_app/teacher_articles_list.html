@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="content-container">
+    <h1 data-aos="fade-down">Полезные материалы для учителей</h1>
+    
+    {% if is_superuser %}
+    <div class="action-buttons" data-aos="fade-up">
+        <a href="{% url 'create_teacher_article' %}" class="action-button">
+            <i class="fas fa-plus"></i> Создать новую статью
+        </a>
+    </div>
+    {% endif %}
+    
+    <div class="articles-grid" data-aos="fade-up">
+        {% for article in articles %}
+        <div class="article-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
+            <div class="article-content">
+                <h3>{{ article.title }}</h3>
+                <p class="article-date">
+                    <i class="far fa-calendar-alt"></i> {{ article.created_at|date:"d.m.Y" }}
+                </p>
+                <a href="{% url 'teacher_article_detail' article.pk %}" class="read-more">
+                    Читать далее <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-message">
+            <p>Пока нет опубликованных статей.</p>
+            {% if is_superuser %}
+            <p>Нажмите кнопку "Создать новую статью" чтобы добавить материал.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.content-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.action-buttons {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(40, 167, 69, 0.8);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: rgba(40, 167, 69, 1);
+    transform: translateY(-2px);
+}
+
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.article-card {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.article-card:hover {
+    transform: translateY(-5px);
+}
+
+.article-content {
+    padding: 20px;
+}
+
+.article-content h3 {
+    margin: 0 0 10px 0;
+    color: #fff;
+}
+
+.article-date {
+    color: #aaa;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+}
+
+.read-more {
+    display: inline-block;
+    color: #28a745;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.read-more:hover {
+    color: #218838;
+    transform: translateX(5px);
+}
+
+.empty-message {
+    text-align: center;
+    grid-column: 1 / -1;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %} 

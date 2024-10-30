@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate
 from .models import Lesson, Attendance, ChatMessage, Student, UnknownQuestion, News, AboutPage, TeacherResource, UserIdea, TeacherArticle
-from .forms import LessonForm, CustomUserCreationForm, ExcelUploadForm, AttendanceForm, StudentForm
+from .forms import LessonForm, CustomUserCreationForm, ExcelUploadForm, AttendanceForm, StudentForm, TeacherArticleForm, TeacherResourceForm
 import pandas as pd
 import os
 from datetime import datetime, timedelta
@@ -31,6 +31,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from .forms import PasswordResetRequestForm
 from django.core.exceptions import PermissionDenied
+from django.urls import reverse
+from django.core.files.storage import default_storage
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +79,7 @@ KESHA_RIGHTS = """На сайте есть несколько типов пол�
 - Обработка вопросов и идей
 - Полный доступ к KeshaGPT"""
 
-KESHA_KESHAGPT = """KeshaGPT - это продвинутый ассистент на базе GPT, д��ступный только для администраторов и активированных учителей.
+KESHA_KESHAGPT = """KeshaGPT - это продвинутый ассистент на базе GPT, дступный только для администраторов и активированных учителей.
 
 Возможности KeshaGPT:
 - Помощь в подготовке учебных материалов
@@ -165,7 +167,7 @@ def lessons(request):
     # Проверяем, является ли пользователь родителем
     if request.user.userprofile.user_type == 'parent':
         messages.warning(request, 'У родителей нет доступа к учебным материалам.')
-        return render(request, 'lessons.html', {'error_message': 'У родителей нет доступа к учебным материалам.'})
+        return render(request, 'lessons.html', {'error_message': 'У родителей нет доступа к учебным мариалам.'})
     
     # Проверяем, является ли пользователь неактивированным учителем
     if request.user.userprofile.user_type == 'teacher' and not request.user.userprofile.is_teacher_activated:
@@ -248,7 +250,7 @@ def chat_message(request):
                 # Дополнительные функции
                 'посещаемость': 'В разделе "Посещаемость" можно отслеживать присутствие учеников на занятиях.',
                 'регистрация': 'При регистрации вы можете выбрать тип учетной записи: ученик, родитель или учитель. У каждого типа свои права доступа (напишите "права" для подробностей).',
-                'вход': 'Для входа на сайт используйте кнопку "Вход для пользователей" в нижней части страницы.',
+                'вход': 'Для входа а сайт используйте кнопку "Вход для пользователей" в нижней части страницы.',
                 'админ': 'Вход для администратора доступен по соответствующей кнопке в футере сайта.',
                 
                 # Помощь
@@ -274,7 +276,7 @@ def chat_message(request):
             if answered_question:
                 bot_response = answered_question.answer
             else:
-                # Поиск ответа в стандартных ответах
+                # Поиск отета в стандартн��х ответах
                 bot_response = None
                 for key in responses:
                     if key in message:
@@ -612,7 +614,7 @@ def password_reset_request(request):
                             messages.success(request, 'Пароль успешно изменен! Сейчас вы будете перенаправлены на главную страницу.')
                             return render(request, 'password_reset_success.html')
                         else:
-                            messages.warning(request, 'Пароль изменен, но автоматическая аворизация не удалась. Пожалуйста, войдите с новым паролем.')
+                            messages.warning(request, 'Пароль изменен, но автоматическая воризация не удалас. Пожалуйста, войдите с новым паролем.')
                             return redirect('login')
                     except Exception as e:
                         messages.error(request, f'Ошибка при смене пароя: {str(e)}')
@@ -681,6 +683,107 @@ def keshagpt_view(request, feature=None):
     url = feature_urls.get(feature, base_url)
     
     return render(request, 'keshagpt.html', {'url': url})
+
+def is_teacher(user):
+    return user.groups.filter(name='Teacher').exists() or user.is_superuser
+
+@user_passes_test(lambda u: u.is_superuser or (hasattr(u, 'userprofile') and u.userprofile.user_type == 'teacher' and u.userprofile.is_teacher_activated))
+def teacher_articles_list(request):
+    articles = TeacherArticle.objects.filter(is_published=True).order_by('-created_at')
+    context = {
+        'articles': articles,
+        'is_superuser': request.user.is_superuser  # Явно передаем флаг суперпользователя
+    }
+    return render(request, 'main_app/teacher_articles_list.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)  # Только админ может создавать статьи
+def create_teacher_article(request):
+    if request.method == 'POST':
+        form = TeacherArticleForm(request.POST)
+        if form.is_valid():
+            article = form.save()  # Сначала сохраняем статью
+            
+            # Собираем контент из блоков
+            content = []
+            content_types = request.POST.getlist('content_type[]')
+            contents = request.POST.getlist('content[]')
+            images = request.FILES.getlist('images[]')
+            
+            image_index = 0
+            for i, content_type in enumerate(content_types):
+                if content_type == 'text':
+                    if contents[i].strip():  # Пропускаем пустые текстовые блоки
+                        content.append({
+                            'type': 'text',
+                            'content': contents[i]
+                        })
+                elif content_type == 'image':
+                    if image_index < len(images):  # Проверяем, есть ли изображение
+                        # Сохраняем изображение
+                        image_name = f"article_{article.id}_image_{image_index}{os.path.splitext(images[image_index].name)[1]}"
+                        image_path = default_storage.save(f'article_images/{image_name}', images[image_index])
+                        content.append({
+                            'type': 'image',
+                            'path': image_path
+                        })
+                        image_index += 1
+            
+            # Обновляем контент статьи и сохраняем
+            article.content = json.dumps(content)
+            article.save()
+            
+            messages.success(request, 'Статья успешно создана')
+            return redirect('teacher_article_detail', pk=article.pk)
+    else:
+        form = TeacherArticleForm()
+    
+    return render(request, 'main_app/create_teacher_article.html', {'form': form})
+
+@user_passes_test(lambda u: u.is_superuser or (hasattr(u, 'userprofile') and u.userprofile.user_type == 'teacher' and u.userprofile.is_teacher_activated))
+def teacher_article_detail(request, pk):
+    article = get_object_or_404(TeacherArticle, pk=pk)
+    resources = article.resources.all().order_by('order')
+    resource_form = TeacherResourceForm() if request.user.is_superuser else None
+    
+    if request.method == 'POST' and request.user.is_superuser:
+        resource_form = TeacherResourceForm(request.POST, request.FILES)
+        if resource_form.is_valid():
+            resource = resource_form.save(commit=False)
+            resource.article = article
+            resource.save()
+            messages.success(request, 'Файл успешно добавлен')
+            return redirect('teacher_article_detail', pk=pk)
+            
+    return render(request, 'main_app/teacher_article_detail.html', {
+        'article': article,
+        'resources': resources,
+        'resource_form': resource_form
+    })
+
+@user_passes_test(lambda u: u.is_superuser)
+def edit_teacher_article(request, pk):
+    article = get_object_or_404(TeacherArticle, pk=pk)
+    if request.method == 'POST':
+        form = TeacherArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            article = form.save()
+            messages.success(request, 'Статья успешно обновлена')
+            return redirect('teacher_article_detail', pk=article.pk)
+    else:
+        form = TeacherArticleForm(instance=article)
+    return render(request, 'main_app/edit_teacher_article.html', {'form': form, 'article': article})
+
+@user_passes_test(lambda u: u.is_superuser)
+def delete_teacher_article(request, pk):
+    article = get_object_or_404(TeacherArticle, pk=pk)
+    if request.method == 'POST':
+        # Сначала удаляем все связанные ресурсы
+        article.resources.all().delete()
+        # Затем удаляем саму статью
+        article.delete()
+        messages.success(request, 'Статья успешно удалена')
+        return redirect('teacher_articles_list')
+    return render(request, 'main_app/delete_teacher_article.html', {'article': article})
 
 
 
