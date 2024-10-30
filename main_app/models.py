@@ -121,21 +121,49 @@ class AboutPage(models.Model):
     def __str__(self):
         return f"Информация о {self.name}"
 
-class TeacherResource(models.Model):
+class TeacherArticle(models.Model):
     title = models.CharField('Заголовок', max_length=200)
-    description = models.TextField('Описание')
-    link = models.URLField('Ссылка на ресурс', blank=True, null=True)
-    file = models.FileField('Файл', upload_to='teacher_resources/', blank=True, null=True)
+    content = models.TextField('Содержание')
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Последнее обновление', auto_now=True)
+    is_published = models.BooleanField('Опубликовано', default=True)
 
     class Meta:
-        verbose_name = 'Ресурс для учителей'
-        verbose_name_plural = 'Ресурсы для учителей'
+        verbose_name = 'Статья для учителей'
+        verbose_name_plural = 'Статьи для учителей'
         ordering = ['-created_at']
 
     def __str__(self):
         return self.title
+
+class TeacherResource(models.Model):
+    article = models.ForeignKey(TeacherArticle, on_delete=models.CASCADE, related_name='resources', verbose_name='Статья')
+    title = models.CharField('Заголовок', max_length=200)
+    description = models.TextField('Описание', blank=True)
+    file = models.FileField('Файл', upload_to='teacher_files/')
+    file_type = models.CharField('Тип файла', max_length=50, blank=True)
+    order = models.PositiveIntegerField('Порядок', default=0)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    updated_at = models.DateTimeField('Последнее обновление', auto_now=True)
+
+    class Meta:
+        verbose_name = 'Файл для учителей'
+        verbose_name_plural = 'Файлы для учителей'
+        ordering = ['order', 'created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.file_type and self.file:
+            ext = self.file.name.split('.')[-1].lower()
+            if ext in ['jpg', 'jpeg', 'png', 'gif']:
+                self.file_type = 'image'
+            elif ext == 'exe':
+                self.file_type = 'executable'
+            else:
+                self.file_type = 'other'
+        super().save(*args, **kwargs)
 
 class UserProfile(models.Model):
     USER_TYPES = (

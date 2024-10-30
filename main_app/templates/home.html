@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
 {% block title %}Главная - Обучение программированию на Python{% endblock %}
 
 {% block content %}
-<div class="welcome-section">
-    <h1>Здравствуйте! Я преподаватель программирования, и моя миссия - открыть увлекательный мир Python для ваших детей</h1>
-    <p>Этот сайт создан как полезный ресурс для моих учеников и их родителей.</p>
+<div class="welcome-section" data-aos="fade-up">
+    <h1>Добро пожаловать на обучающий сайт!</h1>
+    <p>Здесь вы найдете материалы для изучения программирования и многое другое.</p>
 </div>
 
 <div class="news-section">
     {% for news_item in news %}
-    <div class="news-card">
+    <div class="news-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
         <h2>{{ news_item.title }}</h2>
         <div class="news-meta">
-            <span class="news-date">{{ news_item.created_at|date:"d.m.Y H:i" }}</span>
+            <span class="news-date">{{ news_item.created_at|date:"d.m.Y" }}</span>
         </div>
         <div class="news-content">
             {{ news_item.content|linebreaks }}

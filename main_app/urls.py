@@ -53,4 +53,6 @@ urlpatterns = [
     # Добавьте новые URL-маршруты
     path('teacher-resources/', views.teacher_resources, name='teacher_resources'),
     path('about/', views.about, name='about'),
+    path('keshagpt/', views.keshagpt_view, name='keshagpt'),
+    path('keshagpt/<str:feature>/', views.keshagpt_view, name='keshagpt_feature'),
 ]

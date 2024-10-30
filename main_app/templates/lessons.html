@@ -1,44 +1,40 @@
 {% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Учебные материалы{% endblock %}
+{% load custom_filters %}
 
 {% block content %}
-<div class="content-container">
-    <h1>Учебные материалы</h1>
+<div class="lessons-container">
+    <h2 data-aos="fade-down">Учебные материалы</h2>
     
-    {% if error_message %}
-        <div class="error-message">
-            {{ error_message }}
-        </div>
-    {% else %}
-        {% if lessons %}
-            <div class="lessons-list">
-                {% for lesson in lessons %}
-                <div class="lesson-card">
-                    <h3>{{ lesson.title }}</h3>
-                    <p class="lesson-date">Загружено: {{ lesson.upload_date|date:"d.m.Y" }}</p>
-                    <div class="lesson-actions">
-                        <a href="{% url 'view_lesson' lesson.id %}" class="action-button view-button">
-                            <i class="fas fa-eye"></i> Просмотр
-                        </a>
-                        <a href="{% url 'download_lesson' lesson.id %}" class="action-button download-button">
-                            <i class="fas fa-download"></i> Скачать
-                        </a>
-                        {% if user.is_staff %}
-                        <a href="{% url 'delete_lesson' lesson.id %}" class="action-button delete-button">
-                            <i class="fas fa-trash-alt"></i> Удалить
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-                {% empty %}
-                <p class="no-lessons">Учебные материалы пока не загружены.</p>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>Учебные материалы пока не добавлены.</p>
-        {% endif %}
+    {% if user.is_staff %}
+    <div class="lessons-menu" data-aos="fade-up">
+        <a href="{% url 'upload_lesson' %}" class="action-button">Загрузить новый материал</a>
+    </div>
     {% endif %}
+    
+    <div class="lessons-list">
+        {% for lesson in lessons %}
+        <div class="lesson-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
+            <h3>{{ lesson.title }}</h3>
+            <div class="lesson-date">{{ lesson.formatted_date }}</div>
+            <div class="lesson-actions">
+                <a href="{% url 'view_lesson' lesson.id %}" class="action-button view-button">
+                    <i class="fas fa-eye"></i> Просмотр
+                </a>
+                <a href="{% url 'download_lesson' lesson.id %}" class="action-button download-button">
+                    <i class="fas fa-download"></i> Скачать
+                </a>
+                {% if user.is_staff %}
+                <a href="{% url 'delete_lesson' lesson.id %}" class="action-button delete-button">
+                    <i class="fas fa-trash"></i> Удалить
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-lessons" data-aos="fade-up">
+            <p>Материалы пока не добавлены</p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

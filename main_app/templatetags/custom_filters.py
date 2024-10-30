@@ -3,5 +3,8 @@ from django import template
 register = template.Library()
 
 @register.filter
-def previtem(items, attribute):
-    return items[items.index(items) - 1].__getattribute__(attribute)
+def multiply(value, arg):
+    try:
+        return int(value) * int(arg)
+    except (ValueError, TypeError):
+        return ''

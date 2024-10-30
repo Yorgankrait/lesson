@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate
-from .models import Lesson, Attendance, ChatMessage, Student, UnknownQuestion, News, AboutPage, TeacherResource, UserIdea
+from .models import Lesson, Attendance, ChatMessage, Student, UnknownQuestion, News, AboutPage, TeacherResource, UserIdea, TeacherArticle
 from .forms import LessonForm, CustomUserCreationForm, ExcelUploadForm, AttendanceForm, StudentForm
 import pandas as pd
 import os
@@ -33,6 +33,63 @@ from .forms import PasswordResetRequestForm
 from django.core.exceptions import PermissionDenied
 
 logger = logging.getLogger(__name__)
+
+# В начале файла добавляем константы
+KESHA_GREETING = """Я могу рассказать о любом разделе сайта и правах доступа. Доступные команды:
+- "главная" - информация о главной странице
+- "ученики" - информация о разделе учеников и проектов
+- "материалы" - информация об учебных материалах 
+- "интерпретатор" - информация о Python интерпретаторе
+- "посещаемость" - информация о посещаемости
+- "права" - информация о правах разных типов пользователей
+- "предложить идею" - поделиться идеей по улучшению сайта
+- "keshagpt" - информация о продвинутом ассистенте (для администраторов и активированных учителей)"""
+
+KESHA_RIGHTS = """На сайте есть несколько типов пользователей с разными правами:
+
+Все пользователи:
+- Доступ к Python интерпретатору
+- Просмотр информации об авторе
+- Базовое общение с чат-ботом
+
+Авторизованные пользователи:
+- Расширенное общение с чат-ботом
+- Возможность предлагать идеи
+- Просмотр учеников и проектов
+- Просмотр посещаемости
+
+Ученики (после активации):
+- Доступ к учебным материалам
+- Возможность скачивания материалов
+
+Родители:
+- Нет доступа к учебным материалам
+
+Учителя (после активации):
+- Доступ к учебным материалам
+- Доступ к разделу "Полезное для учителей"
+- Доступ к KeshaGPT
+
+Администраторы:
+- Управление пользователями
+- Активация учетных записей
+- Управление материалами
+- Обработка вопросов и идей
+- Полный доступ к KeshaGPT"""
+
+KESHA_KESHAGPT = """KeshaGPT - это продвинутый ассистент на базе GPT, д��ступный только для администраторов и активированных учителей.
+
+Возможности KeshaGPT:
+- Помощь в подготовке учебных материалов
+- Ответы на сложные вопросы по программированию
+- Генерация примеров кода и объяснений
+- Проверка кода учеников
+- Рекомендации по улучшению материалов
+
+Для получения доступа к KeshaGPT учителям необходимо:
+1. Зарегистрироваться как учитель
+2. Дождаться активации аккаунта администратором
+3. Получить специальный доступ к KeshaGPT"""
 
 def fix_session(request):
     if not request.session.exists(request.session.session_key):
@@ -144,7 +201,7 @@ def chat_message(request):
             data = json.loads(request.body)
             message = data.get('message').lower()
             
-            # Сохраняем сообщение пользователя
+            # Сохраняем сообщее пользователя
             ChatMessage.objects.create(user=request.user, message=message, is_bot=False)
             
             # Специальная команда для администратора
@@ -180,11 +237,11 @@ def chat_message(request):
                 # Приветствия и прощания
                 'привет': 'Здравствуйте! Я помогу вам разобраться с сайтом. Спросите меня о любом разделе, напишите "права" чтобы узнать о возможностях разных типов пользователей, или "предложить идею" чтобы поделиться своими идеями по улучшению сайта.',
                 'пока': 'До свидания! Буду рад помочь снова!',
-                'как дела': 'У меня всё хорошо, готов помогать! Что вас интересует? Напишите "права" чтобы узнать о возможностях разных типов пользователей, или "предложить идею" ��тобы поделиться своими идеями.',
+                'как дела': 'У меня всё хорошо, готов помогать! Что вас интересует? Напишите "права" чтобы узнать о возможностях разных типов пользователей, или "предложить идею" тобы поделиться своими идеями.',
                 
                 # Описание разделов
                 'главная': 'На главной странице вы найдете общую информацию о нашем обучающем проекте и меня - вашего помощника по сайту.',
-                'ученики': 'В разделе "Ученики и их проекты" вы можете увидеть работы наших учеников, их достижения и проекты, которые они создали во время обучения.',
+                'ученики': 'В аделе "Ученики и их проекты" вы можете увидеть работы наших учеников, их достижения и проекты, которые они создали во время обучения.',
                 'материалы': 'В разделе "Учебные материалы" собраны все презентации и уроки по программированию.',
                 'интерпретатор': 'Python Интерпретатор позволяет писать и выполнять код прямо в браузере.',
                 
@@ -195,21 +252,14 @@ def chat_message(request):
                 'админ': 'Вход для администратора доступен по соответствующей кнопке в футере сайта.',
                 
                 # Помощь
-                'помощь': ('Я могу рассказать о любом разделе сайта и правах доступа. Доступные команды:\n\n'
-                          '- "главная" - информация о главной странице\n'
-                          '- "ученики" - информация о разделе учеников и проектов\n'
-                          '- "материалы" - информация об учебных материалах\n'
-                          '- "интерпретатор" - информация о Python интерпретаторе\n'
-                          '- "посещаемость" - информация о посещаемости\n'
-                          '- "права" - информация о правах разных типов пользователей\n'
-                          '- "предложить идею" - поделиться идеей по улучшению сайта'),
-                
-                'что ты умеешь': 'Я могу рассказать о разных частях сайта, помочь с навигацией и ответить на базовые вопросы. Напишите "помощь" для получения списка всех доступных команд.',
+                'помощь': KESHA_GREETING,
+                'права': KESHA_RIGHTS,
+                'keshagpt': KESHA_KESHAGPT,
                 
                 # Команда для предложения идеи
                 'предложить идею': 'Конечно, я передам вашу идею администратору, опишите её',
                 
-                # Добавляем информацию о команде для администратора
+                # обавляем информацию о команде для администратора
                 'команды админа': ('Доступные команды для администратора:\n'
                                  '- "что нового" - просмотр непросмотренных идей пользователей'),
             }
@@ -243,7 +293,7 @@ def chat_message(request):
                     bot_response = ('Извините, я пока не знаю ответа на этот вопрос. '
                                   'Я передал ваш вопрос администратору. '
                                   'Попробуйте спросить о конкретном разделе сайта '
-                                  'или напишите "помощь" для получения списка доступных ко��анд.')
+                                  'или напшите "помощь" для получения списка доступных коанд.')
             
             # Сохраняем ответ бота
             ChatMessage.objects.create(user=request.user, message=bot_response, is_bot=True)
@@ -294,7 +344,7 @@ def view_lesson(request, lesson_id):
                     code_font = ImageFont.truetype("/Library/Fonts/Courier New.ttf", 20)
             except IOError as e:
                 logger.error(f"Font loading error: {str(e)}")
-                # Если не удалось загрузить системные шрифты, используем дефолтный
+                # Если не удалось загрузить системные шрфты, используем дефолтный
                 title_font = ImageFont.load_default()
                 content_font = ImageFont.load_default()
                 code_font = ImageFont.load_default()
@@ -537,7 +587,7 @@ def password_reset_request(request):
             try:
                 user = User.objects.get(username=username, email=email)
                 
-                # Если пользоватль найден и есть новый пароль в запросе
+                # Если пользоватль найден и еть новый пароль в запросе
                 if 'new_password1' in request.POST and 'new_password2' in request.POST:
                     new_password1 = request.POST['new_password1']
                     new_password2 = request.POST['new_password2']
@@ -565,10 +615,10 @@ def password_reset_request(request):
                             messages.warning(request, 'Пароль изменен, но автоматическая аворизация не удалась. Пожалуйста, войдите с новым паролем.')
                             return redirect('login')
                     except Exception as e:
-                        messages.error(request, f'Ошибка при смене пароля: {str(e)}')
+                        messages.error(request, f'Ошибка при смене пароя: {str(e)}')
                         return render(request, 'password_reset_form.html', {'user_found': True})
                 
-                # Если пользователь найден, но это первый шаг (проверка логина и email)
+                # Если пльзователь найден, но это первый шаг (проверка логина и email)
                 return render(request, 'password_reset_form.html', {
                     'user_found': True,
                     'username': username,
@@ -576,7 +626,7 @@ def password_reset_request(request):
                 })
                 
             except User.DoesNotExist:
-                messages.error(request, 'Пользователь с такими данными не найден')
+                messages.error(request, 'Пользователь с такими анными не найден')
                 return render(request, 'password_reset_request.html', {'form': form})
     else:
         form = PasswordResetRequestForm()
@@ -591,11 +641,46 @@ def about(request):
 
 @wrap_view
 def teacher_resources(request):
-    # Доступно активированным учителям и администраторам
-    if not check_teacher_or_admin_access(request.user):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    if not (request.user.is_superuser or 
+            (hasattr(request.user, 'userprofile') and 
+             request.user.userprofile.user_type == 'teacher' and 
+             request.user.userprofile.is_teacher_activated)):
         raise PermissionDenied
-    resources = TeacherResource.objects.all()
-    return render(request, 'teacher_resources.html', {'resources': resources})
+    
+    articles = TeacherArticle.objects.filter(is_published=True).prefetch_related('resources')
+    return render(request, 'teacher_resources.html', {'articles': articles})
+
+def keshagpt_view(request, feature=None):
+    # Проверяем, является ли пользователь админом или активированным учителем
+    if not request.user.is_authenticated:
+        raise PermissionDenied
+    
+    is_authorized = (
+        request.user.is_superuser or 
+        (hasattr(request.user, 'userprofile') and 
+         request.user.userprofile.user_type == 'teacher' and 
+         request.user.userprofile.is_teacher_activated)
+    )
+    
+    if not is_authorized:
+        raise PermissionDenied
+    
+    # Базовый URL blackbox.ai
+    base_url = 'https://www.blackbox.ai'
+    
+    # Словарь соответствия функций и их URL
+    feature_urls = {
+        'chat': base_url,
+        'image': 'https://www.blackbox.ai/agent/ImageGenerationLV45LJp'
+    }
+    
+    # Определяем URL для рендеринга
+    url = feature_urls.get(feature, base_url)
+    
+    return render(request, 'keshagpt.html', {'url': url})
 
 
 

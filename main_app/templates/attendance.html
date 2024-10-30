@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
 {% block title %}Посещаемость занятий{% endblock %}
 
 {% block content %}
 <div class="attendance-container">
-    <h2>Посещаемость занятий</h2>
+    <h2 data-aos="fade-down">Посещаемость занятий</h2>
 
     {% if user.is_staff %}
-    <div class="attendance-menu">
+    <div class="attendance-menu" data-aos="fade-up">
         <a href="{% url 'add_student' %}" class="menu-button">
             <i class="fas fa-user-plus"></i> Добавить нового ученика
         </a>
@@ -18,7 +19,7 @@
     {% endif %}
 
     {% for date, attendances in grouped_attendances %}
-    <div class="month-container">
+    <div class="month-container" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
         <h3>{{ date }}</h3>
         <div class="calendar">
             {% for attendance in attendances %}

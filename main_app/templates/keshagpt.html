@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="keshagpt-wrapper">
+    <div class="keshagpt-nav">
+        <a href="{% url 'keshagpt' %}" class="keshagpt-nav-item">Chat</a>
+        <a href="{% url 'keshagpt_feature' 'image' %}" class="keshagpt-nav-item">Image Generation</a>
+    </div>
+    <div class="keshagpt-container">
+        <iframe 
+            src="{{ url }}" 
+            frameborder="0" 
+            class="keshagpt-frame"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-orientation-lock allow-pointer-lock"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            referrerpolicy="origin"
+        ></iframe>
+    </div>
+</div>
+{% endblock %} 

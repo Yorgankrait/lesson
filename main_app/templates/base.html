@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Мой обучающий сайт{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     {% block extra_css %}{% endblock %}
     <script src="{% static 'js/background.js' %}"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <div id="background-container">
@@ -29,6 +30,9 @@
                                 <a href="{% url 'about' %}" class="dropdown-item">Обо мне</a>
                                 {% if user.is_authenticated and user.is_superuser or user.userprofile.user_type == 'teacher' and user.userprofile.is_teacher_activated %}
                                     <a href="{% url 'teacher_resources' %}" class="dropdown-item">Полезное для учителей</a>
+                                    <a href="{% url 'keshagpt' %}" class="dropdown-item">
+                                        <i class="fas fa-robot"></i> KeshaGPT
+                                    </a>
                                 {% endif %}
                             </div>
                         </button>
@@ -105,5 +109,13 @@
     {% block extra_js %}{% endblock %}
     <script src="{% static 'js/chatbot.js' %}"></script>
     <script src="{% static 'js/menu.js' %}"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    </script>
 </body>
 </html>

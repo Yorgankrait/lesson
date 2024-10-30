@@ -78,6 +78,15 @@ ROOT_URLCONF = 'my_teaching_site.urls'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Добавляем настройки для загрузки файлов
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
+
+# Максимальный размер загружаемого файла (например, 50MB)
+MAX_UPLOAD_SIZE = 52428800
+
 # Добавьте эту настройку
 TEMP_DIR = tempfile.gettempdir()
 

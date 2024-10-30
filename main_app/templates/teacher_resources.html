@@ -1,25 +1,130 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
 {% block content %}
-<div class="content-container">
-    <h1>Полезное для учителей</h1>
-    <div class="resources-grid">
-        {% if resources %}
-            {% for resource in resources %}
-                <div class="resource-card">
-                    <h2>{{ resource.title }}</h2>
-                    <p>{{ resource.description }}</p>
-                    {% if resource.link %}
-                        <a href="{{ resource.link }}" target="_blank" class="resource-link">Перейти к ресурсу</a>
-                    {% endif %}
-                    {% if resource.file %}
-                        <a href="{{ resource.file.url }}" class="resource-download">Скачать файл</a>
+<div class="resources-container">
+    <div id="articles-list" class="articles-view">
+        <h1 class="resources-title">Полезные материалы для учителей</h1>
+        
+        <div class="articles-grid">
+            {% for article in articles %}
+            <div class="article-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
+                <div class="article-header">
+                    <h2>{{ article.title }}</h2>
+                    <div class="article-meta">
+                        <span><i class="far fa-calendar-alt"></i> {{ article.created_at|date:"d.m.Y" }}</span>
+                        {% if article.updated_at != article.created_at %}
+                            <span><i class="fas fa-sync-alt"></i> {{ article.updated_at|date:"d.m.Y" }}</span>
+                        {% endif %}
+                    </div>
+                    <button class="read-more-button" onclick="showArticle('article-{{ article.id }}')">
+                        <i class="fas fa-book-open"></i> Читать
+                    </button>
+                </div>
+                
+                <div class="article-preview">
+                    {{ article.content|truncatewords:30|linebreaks }}
+                    <div class="fade-overlay"></div>
+                </div>
+
+                <!-- Скрытый контейнер с полным содержимым статьи -->
+                <div id="article-{{ article.id }}" class="article-full" style="display: none;">
+                    <h1>{{ article.title }}</h1>
+                    <div class="article-meta">
+                        <span><i class="far fa-calendar-alt"></i> {{ article.created_at|date:"d.m.Y" }}</span>
+                        {% if article.updated_at != article.created_at %}
+                            <span><i class="fas fa-sync-alt"></i> {{ article.updated_at|date:"d.m.Y" }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="article-content">
+                        {{ article.content|safe|linebreaks }}
+                    </div>
+                    {% if article.resources.exists %}
+                    <div class="resources-wrapper">
+                        <h3 class="resources-title">
+                            <i class="fas fa-paperclip"></i> Прикрепленные файлы
+                        </h3>
+                        <div class="resources-grid">
+                            {% for resource in article.resources.all %}
+                            <div class="resource-card">
+                                {% if resource.file_type == 'image' %}
+                                <div class="resource-preview">
+                                    <img src="{{ resource.file.url }}" alt="{{ resource.title }}" 
+                                         onclick="openImagePreview(this.src)" class="preview-image">
+                                </div>
+                                {% else %}
+                                <div class="resource-icon">
+                                    {% if resource.file_type == 'executable' %}
+                                        <i class="fas fa-cog"></i>
+                                    {% else %}
+                                        <i class="fas fa-file"></i>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                <div class="resource-info">
+                                    <h4>{{ resource.title }}</h4>
+                                    {% if resource.description %}
+                                        <p>{{ resource.description }}</p>
+                                    {% endif %}
+                                    <a href="{{ resource.file.url }}" class="resource-download" 
+                                       {% if resource.file_type == 'executable' %}download{% endif %}>
+                                        <i class="fas fa-download"></i> Скачать
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
+            </div>
+            {% empty %}
+            <div class="no-articles" data-aos="fade-up">
+                <i class="fas fa-inbox"></i>
+                <p>Материалы пока не добавлены</p>
+            </div>
             {% endfor %}
-        {% else %}
-            <p>Ресурсы пока не добавлены.</p>
-        {% endif %}
+        </div>
+    </div>
+    
+    <div id="article-view" class="article-view" style="display: none;">
+        <button class="back-button" onclick="showArticlesList()">
+            <i class="fas fa-arrow-left"></i> Назад к списку статей
+        </button>
+        <div id="full-article" class="full-article"></div>
     </div>
 </div>
+
+<!-- Модальное окно для просмотра изображений -->
+<div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <img id="modalImage" class="modal-content">
+</div>
+
+<script>
+function showArticle(articleId) {
+    const articleContent = document.getElementById(articleId).innerHTML;
+    document.getElementById('full-article').innerHTML = articleContent;
+    document.getElementById('articles-list').style.display = 'none';
+    document.getElementById('article-view').style.display = 'block';
+    window.scrollTo(0, 0);
+}
+
+function showArticlesList() {
+    document.getElementById('article-view').style.display = 'none';
+    document.getElementById('articles-list').style.display = 'block';
+}
+
+function openImagePreview(src) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    modal.style.display = "block";
+    modalImg.src = src;
+}
+
+// Закрытие модального окна
+document.querySelector('.modal-close').onclick = function() {
+    document.getElementById('imageModal').style.display = "none";
+}
+</script>
 {% endblock %}

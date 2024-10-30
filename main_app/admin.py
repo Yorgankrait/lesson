@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lesson, ChatMessage, Student, Attendance, UnknownQuestion, Project, News, AboutPage, TeacherResource, UserProfile, UserIdea
+from .models import Lesson, ChatMessage, Student, Attendance, UnknownQuestion, Project, News, AboutPage, TeacherResource, UserProfile, UserIdea, TeacherArticle
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
@@ -80,11 +80,23 @@ class AboutPageAdmin(admin.ModelAdmin):
     list_display = ('name', 'title', 'updated_at')
     search_fields = ('name', 'title', 'experience', 'education')
 
-@admin.register(TeacherResource)
-class TeacherResourceAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created_at', 'updated_at')
-    search_fields = ('title', 'description')
-    list_filter = ('created_at', 'updated_at')
+class TeacherResourceInline(admin.TabularInline):
+    model = TeacherResource
+    extra = 1
+    fields = ('title', 'description', 'file', 'order')
+    ordering = ('order',)
+
+@admin.register(TeacherArticle)
+class TeacherArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'created_at', 'updated_at', 'is_published')
+    list_filter = ('is_published', 'created_at', 'updated_at')
+    search_fields = ('title', 'content')
+    inlines = [TeacherResourceInline]
+    
+    class Media:
+        css = {
+            'all': ('css/admin_styles.css',)
+        }
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
