@@ -221,7 +221,7 @@ def chat_message(request):
                 ChatMessage.objects.create(user=request.user, message=bot_response, is_bot=True)
                 return JsonResponse({'status': 'success', 'message': bot_response})
             
-            # Проверяем, ожидает ли пользователь ввода идеи
+            # Проверяем, ожидает л�� пользователь ввода идеи
             if 'waiting_for_idea' in request.session:
                 # Создаем новую идею
                 UserIdea.objects.create(
@@ -249,9 +249,9 @@ def chat_message(request):
                 
                 # Дополнительные функции
                 'посещаемость': 'В разделе "Посещаемость" можно отслеживать присутствие учеников на занятиях.',
-                'регистрация': 'При регистрации вы можете выбрать тип учетной записи: ученик, родитель или учитель. У каждого типа свои права доступа (напишите "права" для подробностей).',
+                'регистрация': 'При регистрации вы можете вбрать тип учетной записи: ученик, родитель или учитель. У каждого типа свои права доступа (напишите "права" для подробностей).',
                 'вход': 'Для входа а сайт используйте кнопку "Вход для пользователей" в нижней части страницы.',
-                'админ': 'Вход для администратора доступен по соответствующей кнопке в футере сайта.',
+                'админ': 'Вход для администратора доступен по соответствующей кнопке в утере сайта.',
                 
                 # Помощь
                 'помощь': KESHA_GREETING,
@@ -446,13 +446,17 @@ def upload_lesson(request):
         form = LessonForm()
     return render(request, 'upload_lesson.html', {'form': form})
 
-@login_required
-@user_passes_test(lambda u: u.is_staff)
-@wrap_view
+@user_passes_test(lambda u: u.is_superuser)
 def delete_lesson(request, lesson_id):
-    lesson = get_object_or_404(Lesson, id=lesson_id)
+    lesson = get_object_or_404(Lesson, pk=lesson_id)
     if request.method == 'POST':
+        # Удаляем файл презентации
+        if lesson.presentation:
+            if os.path.exists(lesson.presentation.path):
+                os.remove(lesson.presentation.path)
+        # Удаляем урок
         lesson.delete()
+        messages.success(request, 'Урок успешно удален')
         return redirect('lessons')
     return render(request, 'delete_lesson.html', {'lesson': lesson})
 
@@ -607,7 +611,7 @@ def password_reset_request(request):
                         user.set_password(new_password1)
                         user.save()
                         
-                        # Авторизуем пользователя
+                        # Авторзуем пользователя
                         auth_user = authenticate(username=username, password=new_password1)
                         if auth_user is not None:
                             login(request, auth_user)
@@ -710,15 +714,18 @@ def create_teacher_article(request):
             images = request.FILES.getlist('images[]', [])
             
             image_index = 0
-            for i, content_type in enumerate(content_types):
+            text_index = 0
+            
+            for content_type in content_types:
                 if content_type == 'text':
-                    if i < len(contents) and contents[i].strip():  # Проверяем индекс
+                    if text_index < len(contents) and contents[text_index].strip():
                         content.append({
                             'type': 'text',
-                            'content': contents[i]
+                            'content': contents[text_index]
                         })
+                    text_index += 1
                 elif content_type == 'image':
-                    if image_index < len(images):  # Проверяем наличие изображения
+                    if image_index < len(images):
                         image_name = f"article_{article.id}_image_{image_index}{os.path.splitext(images[image_index].name)[1]}"
                         image_path = default_storage.save(f'article_images/{image_name}', images[image_index])
                         content.append({
@@ -775,11 +782,33 @@ def edit_teacher_article(request, pk):
 def delete_teacher_article(request, pk):
     article = get_object_or_404(TeacherArticle, pk=pk)
     if request.method == 'POST':
-        # Сначала удаляем все связанные ресурсы
-        article.resources.all().delete()
-        # Затем удаляем саму статью
+        # Удаляем превью изображение, если оно есть
+        if article.preview_image:
+            if os.path.exists(article.preview_image.path):
+                os.remove(article.preview_image.path)
+
+        # Получаем и удаляем все изображения из контента
+        try:
+            content = json.loads(article.content)
+            for block in content:
+                if block.get('type') == 'image' and block.get('path'):
+                    file_path = os.path.join(settings.MEDIA_ROOT, block['path'])
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+        except:
+            pass  # Если не удалось загрузить контент, пропускаем
+
+        # Удаляем все связанные ресурсы и их файлы
+        for resource in article.resources.all():
+            if resource.file:
+                if os.path.exists(resource.file.path):
+                    os.remove(resource.file.path)
+            resource.delete()
+
+        # Удаляем саму статью
         article.delete()
-        messages.success(request, 'Статья успешно удалена')
+        
+        messages.success(request, 'Статья и все связанные файлы успешно удалены')
         return redirect('teacher_articles_list')
     return render(request, 'main_app/delete_teacher_article.html', {'article': article})
 
