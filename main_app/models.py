@@ -125,6 +125,7 @@ class AboutPage(models.Model):
 class TeacherArticle(models.Model):
     title = models.CharField('Заголовок', max_length=200)
     content = models.TextField('Содержание', blank=True)
+    preview_image = models.ImageField('Превью изображение', upload_to='article_previews/', blank=True, null=True)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Последнее обновление', auto_now=True)
     is_published = models.BooleanField('Опубликовано', default=True)

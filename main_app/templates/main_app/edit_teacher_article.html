@@ -5,26 +5,95 @@
     <h1 data-aos="fade-down">Редактирование статьи</h1>
     
     <div class="form-container" data-aos="fade-up">
-        <form method="post" class="article-form">
+        <form method="post" class="article-form" enctype="multipart/form-data">
             {% csrf_token %}
             
-            {% for field in form %}
+            <!-- Заголовок статьи -->
             <div class="form-group">
-                <label for="{{ field.id_for_label }}" class="form-label">
-                    {{ field.label }}
+                <label for="{{ form.title.id_for_label }}" class="form-label">
+                    {{ form.title.label }}
                 </label>
-                {{ field }}
-                {% if field.help_text %}
-                <div class="form-help">{{ field.help_text }}</div>
+                {{ form.title }}
+                {% if form.title.errors %}
+                <div class="form-error">{{ form.title.errors }}</div>
                 {% endif %}
-                {% if field.errors %}
-                <div class="form-error">
-                    {{ field.errors }}
+            </div>
+
+            <!-- Превью изображение -->
+            <div class="form-group">
+                <label for="{{ form.preview_image.id_for_label }}" class="form-label">
+                    {{ form.preview_image.label }}
+                </label>
+                {{ form.preview_image }}
+                {% if form.preview_image.errors %}
+                <div class="form-error">{{ form.preview_image.errors }}</div>
+                {% endif %}
+                {% if article.preview_image %}
+                <div class="current-preview">
+                    <img src="{{ article.preview_image.url }}" alt="Current preview">
                 </div>
                 {% endif %}
             </div>
-            {% endfor %}
+
+            <!-- Контент статьи -->
+            <div id="article-content">
+                {% for block in article.get_content %}
+                    {% if block.type == 'text' %}
+                    <div class="content-block" id="block-{{ forloop.counter0 }}">
+                        <textarea name="content[]">{{ block.content }}</textarea>
+                        <input type="hidden" name="content_type[]" value="text">
+                        <div class="block-actions">
+                            <button type="button" class="move-up" onclick="moveBlockUp('block-{{ forloop.counter0 }}')">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button type="button" class="move-down" onclick="moveBlockDown('block-{{ forloop.counter0 }}')">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button type="button" class="delete-block" onclick="deleteBlock('block-{{ forloop.counter0 }}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% elif block.type == 'image' %}
+                    <div class="content-block" id="block-{{ forloop.counter0 }}">
+                        <div class="current-image">
+                            <img src="/media/{{ block.path }}" alt="Current image">
+                        </div>
+                        <div class="block-actions">
+                            <button type="button" class="move-up" onclick="moveBlockUp('block-{{ forloop.counter0 }}')">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button type="button" class="move-down" onclick="moveBlockDown('block-{{ forloop.counter0 }}')">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button type="button" class="delete-block" onclick="deleteBlock('block-{{ forloop.counter0 }}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- Кнопки для добавления контента -->
+            <div class="content-buttons">
+                <button type="button" class="add-text-button" onclick="addTextBlock()">
+                    <i class="fas fa-paragraph"></i> Добавить текст
+                </button>
+                <button type="button" class="add-image-button" onclick="addImageBlock()">
+                    <i class="fas fa-image"></i> Добавить изображение
+                </button>
+            </div>
+
+            <!-- Чекбокс публикации -->
+            <div class="form-group checkbox-group">
+                <label for="{{ form.is_published.id_for_label }}" class="form-label">
+                    {{ form.is_published.label }}
+                </label>
+                {{ form.is_published }}
+            </div>
             
+            <!-- Кнопки действий -->
             <div class="form-actions">
                 <button type="submit" class="action-button">
                     <i class="fas fa-save"></i> Сохранить изменения
@@ -38,6 +107,7 @@
 </div>
 
 <style>
+/* Те же стили, что и в create_teacher_article.html */
 .content-container {
     padding: 20px;
     max-width: 1200px;
@@ -98,15 +168,91 @@ textarea {
     resize: vertical;
 }
 
-.form-help {
-    font-size: 0.9em;
-    color: #aaa;
+.content-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
 }
 
-.form-error {
-    color: #ff6b6b;
-    font-size: 0.9em;
-    margin-top: 5px;
+.add-text-button,
+.add-image-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.add-text-button {
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
+}
+
+.add-image-button {
+    background-color: rgba(108, 117, 125, 0.8);
+    color: white;
+}
+
+.add-text-button:hover,
+.add-image-button:hover {
+    transform: translateY(-2px);
+}
+
+.content-block {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.block-actions {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.move-up,
+.move-down,
+.delete-block {
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.move-up:hover,
+.move-down:hover {
+    background: rgba(0, 123, 255, 0.8);
+}
+
+.delete-block:hover {
+    background: rgba(220, 53, 69, 0.8);
+}
+
+.current-preview,
+.current-image {
+    margin-top: 10px;
+    max-width: 300px;
+}
+
+.current-preview img,
+.current-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
 }
 
 .form-actions {
@@ -151,19 +297,6 @@ textarea {
     transform: translateY(-2px);
 }
 
-/* Стили для чекбокса публикации */
-input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-}
-
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-
 @media (max-width: 768px) {
     .form-container {
         padding: 20px;
@@ -180,4 +313,94 @@ input[type="checkbox"] {
     }
 }
 </style>
+
+<script>
+// Тот же JavaScript код, что и в create_teacher_article.html
+let blockCounter = {{ article.get_content|length }};
+
+function addTextBlock() {
+    const contentDiv = document.getElementById('article-content');
+    const blockId = `block-${blockCounter++}`;
+    
+    const block = document.createElement('div');
+    block.className = 'content-block';
+    block.id = blockId;
+    block.innerHTML = `
+        <textarea name="content[]" placeholder="Введите текст..."></textarea>
+        <input type="hidden" name="content_type[]" value="text">
+        <div class="block-actions">
+            <button type="button" class="move-up" onclick="moveBlockUp('${blockId}')">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            <button type="button" class="move-down" onclick="moveBlockDown('${blockId}')">
+                <i class="fas fa-arrow-down"></i>
+            </button>
+            <button type="button" class="delete-block" onclick="deleteBlock('${blockId}')">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+    
+    contentDiv.appendChild(block);
+}
+
+function addImageBlock() {
+    const contentDiv = document.getElementById('article-content');
+    const blockId = `block-${blockCounter++}`;
+    
+    const block = document.createElement('div');
+    block.className = 'content-block';
+    block.id = blockId;
+    block.innerHTML = `
+        <input type="file" name="images[]" accept="image/*" onchange="previewImage(this, '${blockId}')">
+        <div class="image-preview"></div>
+        <input type="hidden" name="content_type[]" value="image">
+        <div class="block-actions">
+            <button type="button" class="move-up" onclick="moveBlockUp('${blockId}')">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            <button type="button" class="move-down" onclick="moveBlockDown('${blockId}')">
+                <i class="fas fa-arrow-down"></i>
+            </button>
+            <button type="button" class="delete-block" onclick="deleteBlock('${blockId}')">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+    
+    contentDiv.appendChild(block);
+}
+
+function previewImage(input, blockId) {
+    const preview = document.querySelector(`#${blockId} .image-preview`);
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function moveBlockUp(blockId) {
+    const block = document.getElementById(blockId);
+    const prev = block.previousElementSibling;
+    if (prev) {
+        block.parentNode.insertBefore(block, prev);
+    }
+}
+
+function moveBlockDown(blockId) {
+    const block = document.getElementById(blockId);
+    const next = block.nextElementSibling;
+    if (next) {
+        block.parentNode.insertBefore(next, block);
+    }
+}
+
+function deleteBlock(blockId) {
+    const block = document.getElementById(blockId);
+    block.remove();
+}
+</script>
 {% endblock %} 

@@ -113,9 +113,10 @@ class PasswordResetRequestForm(forms.Form):
 class TeacherArticleForm(forms.ModelForm):
     class Meta:
         model = TeacherArticle
-        fields = ['title', 'is_published']
+        fields = ['title', 'preview_image', 'is_published']
         labels = {
             'title': 'Заголовок',
+            'preview_image': 'Превью изображение (необязательно)',
             'is_published': 'Опубликовать'
         }
 

@@ -167,7 +167,7 @@ def lessons(request):
     # Проверяем, является ли пользователь родителем
     if request.user.userprofile.user_type == 'parent':
         messages.warning(request, 'У родителей нет доступа к учебным материалам.')
-        return render(request, 'lessons.html', {'error_message': 'У родителей нет доступа к учебным мариалам.'})
+        return render(request, 'lessons.html', {'error_message': 'У родитлей нет доступа к учебным мариалам.'})
     
     # Проверяем, является ли пользователь неактивированным учителем
     if request.user.userprofile.user_type == 'teacher' and not request.user.userprofile.is_teacher_activated:
@@ -276,7 +276,7 @@ def chat_message(request):
             if answered_question:
                 bot_response = answered_question.answer
             else:
-                # Поиск отета в стандартн��х ответах
+                # Поиск отета в стандартнх ответах
                 bot_response = None
                 for key in responses:
                     if key in message:
@@ -699,27 +699,26 @@ def teacher_articles_list(request):
 @user_passes_test(lambda u: u.is_superuser)  # Только админ может создавать статьи
 def create_teacher_article(request):
     if request.method == 'POST':
-        form = TeacherArticleForm(request.POST)
+        form = TeacherArticleForm(request.POST, request.FILES)
         if form.is_valid():
-            article = form.save()  # Сначала сохраняем статью
+            article = form.save()
             
             # Собираем контент из блоков
             content = []
-            content_types = request.POST.getlist('content_type[]')
-            contents = request.POST.getlist('content[]')
-            images = request.FILES.getlist('images[]')
+            content_types = request.POST.getlist('content_type[]', [])
+            contents = request.POST.getlist('content[]', [])
+            images = request.FILES.getlist('images[]', [])
             
             image_index = 0
             for i, content_type in enumerate(content_types):
                 if content_type == 'text':
-                    if contents[i].strip():  # Пропускаем пустые текстовые блоки
+                    if i < len(contents) and contents[i].strip():  # Проверяем индекс
                         content.append({
                             'type': 'text',
                             'content': contents[i]
                         })
                 elif content_type == 'image':
-                    if image_index < len(images):  # Проверяем, есть ли изображение
-                        # Сохраняем изображение
+                    if image_index < len(images):  # Проверяем наличие изображения
                         image_name = f"article_{article.id}_image_{image_index}{os.path.splitext(images[image_index].name)[1]}"
                         image_path = default_storage.save(f'article_images/{image_name}', images[image_index])
                         content.append({
@@ -728,7 +727,6 @@ def create_teacher_article(request):
                         })
                         image_index += 1
             
-            # Обновляем контент статьи и сохраняем
             article.content = json.dumps(content)
             article.save()
             

@@ -3,6 +3,12 @@
 
 {% block content %}
 <div class="content-container">
+    <div class="navigation-buttons top" data-aos="fade-up">
+        <a href="{% url 'teacher_articles_list' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Вернуться к списку статей
+        </a>
+    </div>
+
     <h1 data-aos="fade-down">{{ article.title }}</h1>
     
     <div class="article-meta" data-aos="fade-up">
@@ -186,7 +192,7 @@ h2 {
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(40, 167, 69, 0.8);
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -194,8 +200,9 @@ h2 {
 }
 
 .back-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(40, 167, 69, 1);
     transform: translateY(-2px);
+    color: white;
 }
 
 .article-image {
@@ -219,6 +226,15 @@ h2 {
     .delete-button {
         margin-left: 0;
     }
+}
+
+.navigation-buttons.top {
+    margin-bottom: 20px;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: flex-start;
 }
 </style>
 {% endblock %} 
