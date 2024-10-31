@@ -20,7 +20,7 @@ urlpatterns = [
     path('attendance/add-student/', views.add_student, name='add_student'),
     path('attendance/mark/', views.mark_attendance, name='mark_attendance'),
     
-    # Добавляем URL-шаблоны для сброса пароля
+
     path('password_reset/', 
          auth_views.PasswordResetView.as_view(
              template_name='registration/password_reset_form.html',
@@ -47,10 +47,10 @@ urlpatterns = [
          ),
          name='password_reset_complete'),
     
-    # Добавьте новый URL-маршрут
+ 
     path('password_reset_request/', views.password_reset_request, name='password_reset_request'),
     
-    # Добавьте новые URL-маршруты
+
     path('teacher-resources/', views.teacher_resources, name='teacher_resources'),
     path('about/', views.about, name='about'),
     path('keshagpt/', views.keshagpt_view, name='keshagpt'),
