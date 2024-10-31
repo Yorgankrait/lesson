@@ -11,9 +11,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.localhost.run',
+    '.lhr.life',  # Добавляем домен localhost.run
+    '4fa056128b71fd.lhr.life'  # Добавляем ваш конкретный поддомен
+]
 
 # ... (стандартные настройки Django)
 
@@ -180,3 +186,33 @@ LOGGING = {
         },
     },
 }
+
+# Добавляем настройки для работы через туннель
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.localhost.run',
+    '.lhr.life',
+    '4fa056128b71fd.lhr.life'
+]
+
+# Настройки безопасности для работы через туннель
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.localhost.run',
+    'https://*.lhr.life',
+    'https://4fa056128b71fd.lhr.life'
+]
+
+# Для разработки отключаем проверку HTTPS
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+# Добавляем настройки для статических файлов
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+# Добавляем настройки для обработки статики в режиме разработки
+DEBUG = True  # Убедитесь, что DEBUG включен для разработки
