@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Учебная платформа{% endblock %}</title>
+    
+    <!-- Подключаем Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Основные стили -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- JavaScript файлы -->
+    <script src="{% static 'js/background.js' %}"></script>
+    <script src="{% static 'js/chatbot.js' %}"></script>
+    <script src="{% static 'js/menu.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/python_interpreter.js' %}"></script>
+    <script src="{% static 'js/auto_login.js' %}"></script>
+    <!-- Добавляем новый файл для мобильной адаптации -->
+    <script src="{% static 'js/mobile.js' %}"></script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div id="background-container">
+        <video autoplay muted loop id="myVideo">
+            <source src="{% static 'videos/background.mp4' %}" type="video/mp4">
+        </video>
+        <button id="prevBackground" class="background-arrow left-arrow">&lt;</button>
+        <button id="nextBackground" class="background-arrow right-arrow">&gt;</button>
+    </div>
+
+    <nav>
+        <ul>
+            <li class="nav-item">
+                <a href="{% url 'interpreter' %}" class="nav-button interpreter-button">Python Интерпретатор</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <span class="nav-button">{{ user.username }}</span>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'logout' %}" class="nav-button">Выйти</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a href="{% url 'login' %}" class="nav-button">Войти</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'register' %}" class="nav-button">Регистрация</a>
+            </li>
+            {% endif %}
+            <li class="nav-item hamburger-container">
+                <button class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'home' %}" class="dropdown-item">Главная</a>
+                        <a href="{% url 'lessons' %}" class="dropdown-item">Уроки</a>
+                        <a href="{% url 'students' %}" class="dropdown-item">Ученики</a>
+                        <a href="{% url 'attendance' %}" class="dropdown-item">Посещаемость</a>
+                        <a href="{% url 'keshagpt' %}" class="dropdown-item">
+                            <i class="fas fa-robot"></i>KeshaGPT
+                        </a>
+                    </div>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="content-wrapper">
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        
+        {% if user.is_authenticated %}
+        <div class="chatbot">
+            <div class="chatbot-window">
+                <div class="chatbot-header">
+                    <div id="userInfo">
+                        <span class="username">Чат-бот</span>
+                        <span class="status-dot"></span>
+                    </div>
+                </div>
+                <div id="chatbotMessages" class="chatbot-messages"></div>
+                <div class="chatbot-input">
+                    <input type="text" id="chatbotInput" placeholder="Введите сообщение...">
+                    <button id="chatbotSend">Отправить</button>
+                    <button id="chatbotClear">Очистить</button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-item">
+                <a href="#" id="toggleObjects" class="footer-button">Скрыть все объекты</a>
+            </div>
+            <div class="footer-item">
+                <span class="footer-button">© 2024 Учебная платформа</span>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

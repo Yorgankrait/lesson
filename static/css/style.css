@@ -279,7 +279,7 @@ footer {
     display: flex;
     flex-direction: column;
     justify-content: center; /* Центрирование по вертикали */
-    align-items: center; /* Центрирование по горизонтали */
+    align-items: center; /* Центрирование по горизонали */
 }
 
 .register-container h2 {
@@ -338,7 +338,7 @@ footer {
     cursor: pointer;
     transition: background-color 0.3s;
     margin: 0 auto;
-    transform: translateX(-52px); /* С��гаем влево н 52 пикселя */
+    transform: translateX(-52px); /* С  н 52 пикселя */
 }
 
 .register-button:hover {
@@ -715,7 +715,7 @@ footer {
     font-family: monospace;
 }
 
-/* оа��ьте эти стили в конец файла style.css */
+/* аьте эти стили в конец файла style.css */
 
 .lessons-container {
     width: 100%;
@@ -751,7 +751,7 @@ footer {
     border-radius: 10px;
     padding: 15px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-width: 300px; /* Минимальная зиина карточки */
+    min-width: 300px; /* Минимальная зина като */
 }
 
 .lesson-card:hover {
@@ -771,7 +771,7 @@ footer {
     margin-bottom: 15px;
 }
 
-/* Обновляем стили для контейнера кнопок */
+/* Обновляем стии для контейнера кнопок */
 .lesson-actions {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr; /* Три колонки равной ширины */
@@ -829,7 +829,7 @@ footer {
 .user-message {
     background-color: rgba(255, 255, 255, 0.2);
     align-self: flex-end;
-    color: white; /* Дбав��яем белый цвет для текста пользователя */
+    color: white; /* Дбавляем белый цвет для текста пользователя */
 }
 
 .bot-message {
@@ -983,7 +983,7 @@ footer {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    pointer-events: auto; /* Возвращаем взаимодействие */
+    pointer-events: auto; /* Возращаем взаимодействие */
 }
 
 .dropdown-menu:hover {
@@ -1041,7 +1041,7 @@ footer {
     }
 }
 
-/* Задаем индексы для элементов */
+/* Задаем индексы ля элементов */
 .dropdown-item:nth-child(1) {
     --item-index: 1;
 }
@@ -1064,7 +1064,7 @@ footer {
     height: 20px;
 }
 
-/* Остальные стили остаются без изменений */
+/* Остальые тили остаются без изменений */
 
 .resource-card {
     background: rgba(0, 0, 0, 0.5);
@@ -1167,7 +1167,7 @@ footer {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Стили для иконки в гамбургер-меню */
+/* Стили для иконки в гамургер-меню */
 .dropdown-item i.fa-robot {
     margin-right: 8px;
 }
@@ -1523,7 +1523,7 @@ footer {
     color: #4CAF50;
 }
 
-/* Добавляем анимацию для появления элементов */
+/* Добавляем анимацию для появлния элементов */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -1544,7 +1544,7 @@ footer {
     opacity: 1;
 }
 
-/* Обновленные стили для статей */
+/* Обноленные стили для статей */
 .articles-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1685,5 +1685,1127 @@ footer {
     margin-top: 20px;
 }
 
-/* Остальные стили остаются без изменений */
+/* Остальные сили остаются без изменений */
+
+/* Медиа-запрсы для адаптивности */
+
+/* Планеты */
+@media screen and (max-width: 1024px) {
+    #content-container {
+        padding: 0 15px;
+    }
+
+    .lessons-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .articles-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    main {
+        width: 100%;
+        left: 0;
+        padding: 15px;
+    }
+
+    .chatbot {
+        display: none;
+        position: fixed;
+        top: auto;
+        bottom: 70px;
+        right: 0;
+        left: 0;
+        width: 100%;
+        height: 50vh;
+        z-index: 100;
+    }
+
+    /* Добавляем кнопку для открытия чата на мобильных */
+    .chat-toggle {
+        display: block;
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        background: #4CAF50;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 50px;
+        z-index: 101;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .chat-toggle.active + .chatbot {
+        display: flex;
+    }
+}
+
+/* Мобильные устройства */
+@media screen and (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        padding: 10px;
+        height: auto;
+    }
+
+    .nav-item {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .nav-button {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .lessons-list {
+        grid-template-columns: 1fr;
+    }
+
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .resources-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lesson-card {
+        min-width: auto;
+    }
+
+    .welcome-section h1 {
+        font-size: 24px;
+    }
+
+    .welcome-section p {
+        font-size: 16px;
+    }
+
+    .background-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    footer {
+        height: auto;
+        padding: 15px 0;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .register-table td {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 5px 0;
+    }
+
+    .register-table td:first-child {
+        width: 100%;
+        text-align: left;
+        padding-right: 0;
+    }
+
+    .register-button {
+        transform: none;
+        width: 100%;
+    }
+
+    /* Адаптация формы входа */
+    .login-container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    /* Адаптация выпадающего меню */
+    .dropdown-menu {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 10px;
+        flex-direction: column;
+    }
+
+    .dropdown-item {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    /* Навигация */
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    /* Изменяем порядок элементов навигации */
+    .nav-item {
+        width: 100%;
+        margin: 0;
+        order: 5; /* По умолчанию для всех элементов */
+    }
+
+    /* Специальные порядки для элементов */
+    .nav-item:has(a[href*="interpreter"]) {
+        order: 1; /* Python Интерпретатор первый */
+    }
+
+    .nav-item:has(a[href*="login"]) {
+        order: 2; /* Кнопка входа */
+    }
+
+    .nav-item:has(a[href*="register"]) {
+        order: 3; /* Кнопка регистрации */
+    }
+
+    .nav-item:has(a[href*="logout"]) {
+        order: 2; /* Кнопка выхода */
+    }
+
+    .nav-item:has(span.nav-button) {
+        order: 3; /* Имя пользователя */
+    }
+
+    /* Гамбургер-меню последним */
+    .hamburger-container {
+        order: 4;
+    }
+
+    /* Стили для кнопок */
+    .nav-button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin: 0;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 0;
+        text-decoration: none;
+    }
+
+    /* Выпадающее меню */
+    .dropdown-menu {
+        position: static;
+        width: 100%;
+        display: none;
+        padding: 0;
+    }
+
+    .hamburger-menu:hover .dropdown-menu,
+    .dropdown-menu:hover {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dropdown-item {
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+        border-radius: 0;
+    }
+}
+
+/* Маленькие мобильные устройства */
+@media screen and (max-width: 480px) {
+    .lesson-actions {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .action-button {
+        padding: 10px 0;
+    }
+
+    .welcome-section h1 {
+        font-size: 20px;
+    }
+
+    .article-header h2 {
+        font-size: 1.2em;
+    }
+
+    .article-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .chatbot-header {
+        font-size: 14px;
+    }
+
+    .message {
+        max-width: 90%;
+        font-size: 14px;
+    }
+}
+
+/* Поддержка тёмной темы */
+@media (prefers-color-scheme: dark) {
+    .login-container,
+    .register-container,
+    .form-container {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    input, select, textarea {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+}
+
+/* Поддержка устройств с высоким DPI */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .nav-button,
+    .footer-button,
+    .action-button {
+        font-weight: 500;
+    }
+}
+
+/* Обновляем медиа-запросы для маленьких экранов */
+@media screen and (max-width: 480px) {
+    /* Корректируем основной контейнер */
+    .content-wrapper {
+        margin: 70px auto 80px; /* Увеличиваем тступ сверху для навигации */
+        height: calc(100vh - 150px); /* Корректируем высоту */
+    }
+
+    /* Исправляем навигацию */
+    nav {
+        height: auto;
+        min-height: 60px;
+        padding: 5px 0;
+    }
+
+    nav ul {
+        padding: 5px;
+        gap: 5px;
+    }
+
+    .nav-item {
+        height: auto;
+    }
+
+    /* Корректируем гамбургер-меню */
+    .hamburger-menu {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .dropdown-menu {
+        top: 100%; /* Привязываем к нижней границе наигации */
+        max-height: calc(100vh - 60px); /* Ограничиваем высоту */
+        overflow-y: auto; /* Добавляем прокрутку при необходимости */
+    }
+
+    /* Основной контент */
+    main {
+        top: 10px;
+        height: calc(100% - 20px);
+        padding: 10px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+    }
+
+    /* Корректируем сетки */
+    .lessons-list,
+    .articles-grid,
+    .resources-grid,
+    .student-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* Исправляем карточки */
+    .lesson-card,
+    .article-card,
+    .resource-card {
+        min-width: unset;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    /* Корректируем чат-бот */
+    .chatbot {
+        height: 60vh; /* Уменьшаем высоту чата */
+        bottom: 60px; /* Поднимаем выше футера */
+    }
+
+    .chat-toggle {
+        bottom: 70px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+    }
+
+    /* Исправляем футер */
+    footer {
+        height: 60px;
+        padding: 5px 0;
+    }
+
+    .footer-content {
+        padding: 5px;
+        gap: 5px;
+    }
+
+    .footer-button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    /* Корректируем формы */
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* Исправляем кнопки действий */
+    .action-button,
+    .menu-button,
+    .back-button {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+
+    /* Корректируем текст */
+    h1 { font-size: 20px; }
+    h2 { font-size: 18px; }
+    h3 { font-size: 16px; }
+    p { font-size: 14px; }
+
+    /* Исправляем отступы в сообщениях чата */
+    .message {
+        padding: 8px;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    /* Корректируем поле ввода чаа */
+    .chatbot-input {
+        padding: 5px;
+        gap: 5px;
+    }
+
+    #chatbotInput {
+        padding: 6px;
+        font-size: 13px;
+    }
+
+    #chatbotSend,
+    #chatbotClear {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Дополнительные корректировки для очень малньких экранов */
+@media screen and (max-width: 320px) {
+    .content-wrapper {
+        margin: 60px auto 70px;
+    }
+
+    nav {
+        min-height: 50px;
+    }
+
+    .nav-button,
+    .footer-button {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .chat-toggle {
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 18px;
+        right: 10px;
+    }
+
+    .message {
+        max-width: 95%;
+        font-size: 12px;
+    }
+
+    .chatbot-header {
+        padding: 5px;
+        font-size: 12px;
+    }
+}
+
+/* Исправление для устройств с нестандартным соотношением сторон */
+@media screen and (max-aspect-ratio: 16/9) {
+    .content-wrapper {
+        height: calc(100vh - 120px);
+    }
+
+    main {
+        height: calc(100% - 15px);
+    }
+}
+
+/* Обновляем стили для мобильных устройств */
+@media screen and (max-width: 768px) {
+    /* Фиксируем высоту навигации */
+    nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        min-height: 60px;
+        z-index: 1000;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Коррекируем отступ для основного контента */
+    .content-wrapper {
+        margin-top: 70px; /* Увеличиваем отступ сверху */
+        margin-bottom: 80px; /* Отступ для футера */
+        height: calc(100vh - 150px); /* Корректируем высоту */
+        overflow-y: auto;
+    }
+
+    /* Исправляем футер */
+    footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        padding: 5px 0;
+    }
+
+    .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        padding: 5px;
+    }
+
+    .footer-item {
+        width: 100%;
+        max-width: 300px; /* Ограничиваем максимальную ширину кнопок */
+    }
+
+    .footer-button {
+        width: 100%;
+        padding: 8px;
+        margin: 0;
+        font-size: 12px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-radius: 5px;
+    }
+
+    /* Основной контент и чат-бот */
+    main, .chatbot {
+        width: calc(100% - 20px);
+        margin: 5px auto;
+        border-radius: 10px;
+    }
+}
+
+/* Дополнительные корректировки для маленьких экранов */
+@media screen and (max-width: 480px) {
+    .content-wrapper {
+        padding: 5px;
+        padding-bottom: 70px; /* Уменьшаем отступ для футера */
+    }
+
+    .footer-button {
+        padding: 6px;
+        font-size: 11px;
+    }
+
+    .footer-item {
+        max-width: 250px; /* Уменьшаем максимальную ширину кнопок */
+    }
+}
+
+/* Корректировки для очень маленьких экранов */
+@media screen and (max-width: 320px) {
+    .content-wrapper {
+        padding-bottom: 60px;
+    }
+
+    .footer-button {
+        padding: 5px;
+        font-size: 10px;
+    }
+
+    .footer-item {
+        max-width: 200px;
+    }
+}
+
+/* Базовые медиа-запросы для мобильных устройств */
+@media screen and (max-width: 768px) {
+    /* Фиксированная навигация */
+    nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+    }
+
+    nav ul {
+        flex-direction: column;
+        padding: 5px;
+    }
+
+    .nav-item {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .nav-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Основной контейнер */
+    .content-wrapper {
+        padding-top: 70px; /* Отступ для фиксированной навигации */
+        padding-bottom: 70px; /* Отступ для футера */
+        height: auto;
+        min-height: calc(100vh - 140px);
+    }
+
+    /* Основной контент */
+    main {
+        position: relative;
+        width: 100%;
+        left: 0;
+        height: auto;
+        min-height: calc(100vh - 140px);
+        padding: 15px;
+        margin: 0;
+    }
+
+    /* Чат-бот */
+    .chatbot {
+        display: none;
+        position: fixed;
+        bottom: 70px;
+        left: 0;
+        width: 100%;
+        height: 60vh;
+        z-index: 999;
+    }
+
+    /* Кнопка чата */
+    .chat-toggle {
+        display: block;
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #4CAF50;
+        color: white;
+        text-align: center;
+        line-height: 50px;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Фиксированный футер */
+    footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+    }
+
+    .footer-content {
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .footer-button {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    /* Сетки */
+    .lessons-list,
+    .articles-grid,
+    .resources-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    /* Карточки */
+    .lesson-card,
+    .article-card,
+    .resource-card {
+        min-width: unset;
+        width: 100%;
+    }
+}
+
+/* Дополнительные корректировки для маленьких экранов */
+@media screen and (max-width: 480px) {
+    .nav-button,
+    .footer-button,
+    .dropdown-item {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .chatbot {
+        height: 250px;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    /* Увеличиваем отступы между элементами */
+    .nav-item,
+    .footer-item {
+        margin-bottom: 5px;
+    }
+}
+
+/* Мобильная версия */
+@media screen and (max-width: 768px) {
+    /* Разрешаем скроллинг для всей страницы */
+    html, body {
+        height: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch; /* Плавный скролл для iOS */
+    }
+
+    /* Убираем фиксированное позиционирование для фона */
+    #background-container {
+        position: fixed;
+        height: 100%;
+        min-height: 100vh;
+    }
+
+    /* Контейнер контента */
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        height: auto;
+        margin: 0;
+        padding: 10px;
+        gap: 15px;
+        padding-bottom: 80px; /* Добавляем отступ для футера */
+    }
+
+    /* Навигация */
+    nav {
+        order: 1;
+        width: 100%;
+        padding: 10px 0;
+        position: relative;
+        background: rgba(0, 0, 0, 0.9);
+    }
+
+    nav ul {
+        flex-direction: column;
+        padding: 0;
+        gap: 5px;
+    }
+
+    .nav-item {
+        width: 100%;
+        margin: 0;
+    }
+
+    .nav-button {
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    /* Основной контент */
+    main {
+        order: 2;
+        position: relative;
+        width: 100%;
+        left: 0;
+        padding: 15px;
+        margin: 10px auto;
+        height: auto;
+        min-height: calc(50vh - 100px);
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        overflow-y: auto;
+    }
+
+    /* Чат-бот */
+    .chatbot {
+        order: 3;
+        position: relative;
+        width: 100%;
+        height: calc(45vh - 100px);
+        min-height: 250px;
+        margin: 10px auto;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+    }
+
+    /* Футер */
+    footer {
+        order: 4;
+        width: 100%;
+        position: relative;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 10px 0;
+    }
+
+    /* Контейнер для кнопок футера */
+    .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch; /* Растягиваем элементы на всю ширину */
+        gap: 5px;
+        padding: 10px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Элемент футера */
+    .footer-item {
+        width: 100%;
+        display: block; /* Меняем на блочный элемент */
+        margin: 0;
+    }
+
+    /* Кнопка футера */
+    .footer-button {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 0;
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+    /* Убираем все флексбокс свойства у кнопок */
+    .footer-button {
+        flex: none;
+        min-width: 0;
+        white-space: normal;
+    }
+
+    /* Выпадающее меню */
+    .dropdown-menu {
+        position: static;
+        width: 100%;
+        display: none;
+        padding: 0;
+    }
+
+    .hamburger-menu:hover .dropdown-menu,
+    .dropdown-menu:hover {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dropdown-item {
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+        border-radius: 0;
+    }
+}
+
+/* Дополнительные корректировки для маленьких экранов */
+@media screen and (max-width: 480px) {
+    .content-wrapper {
+        padding: 5px;
+        gap: 10px;
+    }
+
+    main {
+        width: calc(100% - 10px);
+        padding: 10px;
+        margin: 5px auto;
+    }
+
+    .chatbot {
+        width: calc(100% - 10px);
+        margin: 5px auto;
+    }
+
+    .chatbot-input {
+        padding: 8px;
+    }
+}
+
+/* Мобильная версия */
+@media screen and (max-width: 768px) {
+    /* Базовые настройки */
+    html, body {
+        height: auto;
+        overflow-y: auto;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Контейнер */
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Навигация */
+    nav {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 0;
+        margin: 0;
+    }
+
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .nav-item {
+        width: 100%;
+        margin: 0;
+    }
+
+    .nav-button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin: 0;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 0;
+        text-decoration: none;
+    }
+
+    /* Основной контент */
+    main {
+        position: relative;
+        width: 100%;
+        left: 0;
+        padding: 15px;
+        margin: 10px 0;
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    /* Чат-бот */
+    .chatbot {
+        width: 100%;
+        height: 300px;
+        margin: 10px 0;
+        padding: 0;
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    /* Футер */
+    footer {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-content {
+        display: flex;
+        flex-direction: column; /* Вертикальное расположение */
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        gap: 0; /* Убираем отступы между элементами */
+    }
+
+    .footer-item {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .footer-button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin: 0;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 0;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    /* Убираем все flex свойства и трансформации */
+    .footer-button {
+        flex: none;
+        transform: none;
+        white-space: normal;
+    }
+
+    /* Убираем отступы и границы между кнопками */
+    .footer-item:not(:last-child) .footer-button {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Дополнительные корректировки для маленьких экранов */
+@media screen and (max-width: 480px) {
+    .nav-button,
+    .footer-button {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    .chatbot {
+        height: 250px;
+    }
+}
+
+/* Мобильная врсия */
+@media screen and (max-width: 768px) {
+    /* Навигация */
+    nav {
+        width: calc(100% - 20px);
+        height: auto;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 10px;
+        margin: 0 10px;
+        box-sizing: border-box;
+    }
+
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        gap: 5px;
+    }
+
+    .nav-item {
+        width: 100%;
+        margin: 0;
+    }
+
+    /* Гамбургер всегда последний */
+    .hamburger-container {
+        order: 9999 !important;
+    }
+
+    .nav-button {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+}
+
+/* Мобильная версия */
+@media screen and (max-width: 768px) {
+    /* Футер */
+    footer {
+        width: calc(100% - 20px);
+        height: auto;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 10px;
+        margin: 0 10px;
+        box-sizing: border-box;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .footer-content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        padding: 0;
+        margin: 0;
+        gap: 5px;
+    }
+
+    .footer-item {
+        width: calc(100% - 45px); /* Уменьшаем ширину на 45px */
+        margin: 0 0 0 30px; /* Увеличиваем отступ слева до 30px */
+        padding: 0;
+    }
+
+    .footer-button {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+}
 
