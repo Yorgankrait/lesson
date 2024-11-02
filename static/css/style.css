@@ -167,7 +167,7 @@ main {
 
 /* Добавляем стили для случая, когда мы не на главной странице */
 .full-width main {
-    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить обла чат-бота */
+    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить обла ат-бота */
     left: -70px; /* Сохраняе левое смещение */
 }
 
@@ -279,7 +279,7 @@ footer {
     display: flex;
     flex-direction: column;
     justify-content: center; /* Центрирование по вертикали */
-    align-items: center; /* Центрирование по горизонали */
+    align-items: center; /* Центрироваие по горизонали */
 }
 
 .register-container h2 {
@@ -1850,7 +1850,7 @@ footer {
         list-style: none;
     }
 
-    /* Изменяем порядок элементов навигации */
+    /* Изменяем порядок элементов навиации */
     .nav-item {
         width: 100%;
         margin: 0;
@@ -1878,7 +1878,7 @@ footer {
         order: 3; /* Имя пользователя */
     }
 
-    /* Гамбургер-меню последним */
+    /* Гамбурге-меню поседним */
     .hamburger-container {
         order: 4;
     }
@@ -2168,7 +2168,7 @@ footer {
 
 /* Обновляем стили для мобильных устройств */
 @media screen and (max-width: 768px) {
-    /* Фиксируем высоту навигации */
+    /* Фиксируем высоту навгации */
     nav {
         position: fixed;
         top: 0;
@@ -2402,7 +2402,7 @@ footer {
 
 /* Мобильная версия */
 @media screen and (max-width: 768px) {
-    /* Разрешаем скроллинг для всей страницы */
+    /* Рзрешаем скроллинг для всей страницы */
     html, body {
         height: auto;
         overflow-y: auto;
@@ -2746,7 +2746,7 @@ footer {
         margin: 0;
     }
 
-    /* Гамбургер всегда последний */
+    /* Гамбургер всегда последнй */
     .hamburger-container {
         order: 9999 !important;
     }
@@ -2775,22 +2775,26 @@ footer {
         padding: 10px;
         margin: 0 10px;
         box-sizing: border-box;
+        position: relative;
+        bottom: auto;
+        left: auto;
         border-radius: 10px 10px 0 0;
+        z-index: 1000;
     }
 
     .footer-content {
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: auto;
         padding: 0;
         margin: 0;
         gap: 5px;
+        align-items: center;
     }
 
     .footer-item {
-        width: calc(100% - 45px); /* Уменьшаем ширину на 45px */
-        margin: 0 0 0 30px; /* Увеличиваем отступ слева до 30px */
+        width: calc(100% - 20px);
+        margin: 0;
         padding: 0;
     }
 
@@ -2806,6 +2810,25 @@ footer {
         border-radius: 5px;
         text-decoration: none;
         font-size: 14px;
+    }
+}
+
+/* Корректировки для маленьких экранов */
+@media screen and (max-width: 480px) {
+    footer {
+        width: calc(100% - 10px);
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+    .footer-item {
+        width: calc(100% - 10px); /* Уменьшаем отступы для маленьких экранов */
+        margin: 0;
+    }
+
+    .footer-button {
+        padding: 10px;
+        font-size: 13px;
     }
 }
 

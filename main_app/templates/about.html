@@ -1,26 +1,75 @@
 {% extends 'base.html' %}
-{% load custom_filters %}
 
 {% block content %}
-<div class="content-container">
-    <h1 data-aos="fade-down">Обо мне</h1>
-    {% if about_info %}
-    <div class="about-content" data-aos="fade-up">
-        <div class="profile-info">
-            <h2>{{ about_info.name }}</h2>
-            <p>{{ about_info.title }}</p>
-            <div class="experience" data-aos="fade-up" data-aos-delay="100">
-                <h3>Опыт работы</h3>
-                {{ about_info.experience|linebreaks }}
-            </div>
-            <div class="education" data-aos="fade-up" data-aos-delay="200">
-                <h3>Образование</h3>
-                {{ about_info.education|linebreaks }}
-            </div>
+<div class="about-container">
+    <div class="about-content">
+        <h1 class="about-title">{{ about.name }}</h1>
+        <div class="about-position">{{ about.title }}</div>
+        
+        <div class="about-section">
+            <h2>Опыт работы</h2>
+            <div class="about-text">{{ about.experience|linebreaks }}</div>
+        </div>
+        
+        <div class="about-section">
+            <h2>Образование</h2>
+            <div class="about-text">{{ about.education|linebreaks }}</div>
         </div>
     </div>
-    {% else %}
-    <p data-aos="fade-up">Информация пока не добавлена.</p>
-    {% endif %}
 </div>
+
+<style>
+/* Мобильные стили для страницы "О нас" */
+@media screen and (max-width: 768px) {
+    .about-container {
+        padding: 15px;
+    }
+
+    .about-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .about-position {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .about-section {
+        margin-bottom: 25px;
+    }
+
+    .about-section h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .about-text {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .about-container {
+        padding: 10px;
+    }
+
+    .about-title {
+        font-size: 22px;
+    }
+
+    .about-position {
+        font-size: 16px;
+    }
+
+    .about-section h2 {
+        font-size: 18px;
+    }
+
+    .about-text {
+        font-size: 14px;
+    }
+}
+</style>
 {% endblock %}
