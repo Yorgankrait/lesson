@@ -3,6 +3,7 @@ from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 import tempfile
 import multiprocessing
+import platform
 
 # Определение BASE_DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,15 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.localhost.run',
-    '.lhr.life',  # Добавляем домен localhost.run
-    '4fa056128b71fd.lhr.life'  # Добавляем ваш конкретный поддомен
-]
+DEBUG = True  # для разработки
 
 # ... (стандартные настройки Django)
 
@@ -125,8 +118,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # или другой SMTP-сервер
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ваш_email@gmail.com'
-EMAIL_HOST_PASSWORD = 'ваш_пароль_приложения'  # Для Gmail нужно использовать пароль приложения
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # Для Gmail нужно испвать пароль приложения
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = False  # Установите True, если используете HTTPS
@@ -134,10 +127,8 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 
 # Настройка для предотвращения утечки семафоров
-if __name__ != '__main__':
-    import platform
-    if platform.system() != 'Windows':  # Только для Unix-подобных систем
-        multiprocessing.set_start_method('fork')
+if os.environ.get('DJANGO_SETTINGS_MODULE') and platform.system() != 'Windows':
+    multiprocessing.set_start_method('fork')
 
 CACHES = {
     'default': {
@@ -145,6 +136,10 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+
+# Добавьте проверку существования директории для логов
+LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOGS_DIR, exist_ok=True)
 
 LOGGING = {
     'version': 1,
@@ -163,8 +158,8 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'debug.log',
-            'encoding': 'utf-8',  # Явно указываем кодировку UTF-8
+            'filename': os.path.join(LOGS_DIR, 'debug.log'),
+            'encoding': 'utf-8',
             'formatter': 'verbose',
         },
         'console': {
@@ -204,11 +199,17 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # Для разработки отключаем проверку HTTPS
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+if DEBUG:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+else:
+    # Для продакшена:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
-# Добавляем настройки для статических файлов
+# Добавл��ем настройки для стаических файлов
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -216,3 +217,8 @@ STATICFILES_FINDERS = [
 
 # Добавляем настройки для обработки статики в режиме разработки
 DEBUG = True  # Убедитесь, что DEBUG включен для разработки
+
+# Добавьте настройки безопасности
+X_FRAME_OPTIONS = 'DENY'
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
