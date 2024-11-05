@@ -1916,6 +1916,77 @@ footer {
         margin: 0;
         border-radius: 0;
     }
+
+    /* Выпадающее меню */
+    .dropdown-menu {
+        display: flex;
+        position: absolute;
+        top: 100%; /* Размещаем под кнопкой гамбургера */
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 10px;
+        padding: 5px;
+        margin-top: 5px;
+        flex-direction: column; /* Вертикальное расположение */
+        gap: 5px;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+        transform: translateY(-10px);
+        pointer-events: none;
+    }
+
+    .dropdown-item {
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+        text-align: center;
+        border-radius: 5px;
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: slideDown 0.3s ease-in-out forwards;
+        animation-delay: calc(var(--item-index) * 0.1s);
+    }
+
+    /* Обновляем анимацию для вертикального появления */
+    @keyframes slideDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Обновляем анимацию исчезновения */
+    @keyframes slideUp {
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+    }
+
+    .hamburger-menu:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .dropdown-menu:hover {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
 }
 
 /* Маленькие мобильные устройства */
@@ -2094,7 +2165,7 @@ footer {
     h3 { font-size: 16px; }
     p { font-size: 14px; }
 
-    /* Исправляем отступы в сообщениях чата */
+    /* справляем отступы в сообщениях чата */
     .message {
         padding: 8px;
         margin-bottom: 8px;
@@ -2119,7 +2190,7 @@ footer {
     }
 }
 
-/* Дополнительные корректировки для очень малньких ��кранов */
+/* Дополнительные корректировки для очень малньких кранов */
 @media screen and (max-width: 320px) {
     .content-wrapper {
         margin: 60px auto 70px;
@@ -3246,6 +3317,70 @@ footer {
 @media screen and (max-width: 480px) {
     .interpreter-container {
         padding: 10px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    /* Выпадающее меню */
+    .dropdown-menu {
+        display: none;
+        position: static; /* Меняем с absolute на static */
+        width: 100%;
+        background: none;
+        padding: 0;
+        margin: 0;
+        flex-direction: column;
+        gap: 5px;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+    }
+
+    .hamburger-menu:hover .dropdown-menu,
+    .dropdown-menu:hover {
+        display: flex;
+    }
+
+    /* Элементы выпадающего меню */
+    .dropdown-item {
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+
+    /* Контейнер гамбургера */
+    .hamburger-container {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Кнопка гамбургера */
+    .hamburger-menu {
+        width: 100%;
+        border-radius: 5px;
+        margin: 0;
+    }
+
+    /* Убираем анимации */
+    @keyframes slideIn {
+        from { opacity: 1; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideOut {
+        from { opacity: 1; }
+        to { opacity: 1; }
     }
 }
 
