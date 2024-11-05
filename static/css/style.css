@@ -228,7 +228,7 @@ main {
 #chatbotClear {
     padding: 5px 10px;
     border-radius: 15px;
-    background-color: #f44336; /* Красный цвет */
+    background-color: #f44336; /* Красный цве�� */
     color: white;
     border: none;
     cursor: pointer;
@@ -933,7 +933,7 @@ footer {
 .hamburger-container {
     flex: 0 0 auto !important;
     margin-right: 10px;
-    position: relative; /* Важно для позиционирования выпадающего меню */
+    position: relative; /* Важно для пози��ионирования выпадающего меню */
 }
 
 .hamburger-menu {
@@ -2070,7 +2070,7 @@ footer {
         height: auto;
     }
 
-    /* Корректируем гамбургер-меню */
+    /* Корректируе гамбургер-мею */
     .hamburger-menu {
         padding: 6px 12px;
         font-size: 12px;
@@ -2362,7 +2362,7 @@ footer {
         text-align: center;
     }
 
-    /* Основной контейнер */
+    /* Основной контейне */
     .content-wrapper {
         padding-top: 70px; /* Отступ для фиксированной навигации */
         padding-bottom: 70px; /* Отступ для футера */
@@ -2938,7 +2938,7 @@ footer {
         border: 2px;
         flex: 1;
         min-height: 45vh;
-        overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
+        overflow-x: hidden; /* Предотвращаем горизонтальн��ю прокрутку */
     }
 
     /* Контейнеры внутри main */
@@ -3129,16 +3129,7 @@ footer {
         font-size: 14px;
     }
 
-    .register-table input,
-    .register-table select {
-        width: 100%;
-        padding: 8px;
-        margin: 5px 0;
-        box-sizing: border-box;
-        font-size: 14px;
-    }
-
-    /* Общие стили для всех форм */
+    /* Общие стили для всех ф��рм */
     form {
         width: 100%;
         max-width: 100%;
@@ -3215,7 +3206,7 @@ footer {
 }
 
 @media screen and (max-width: 768px) {
-    /* Контейнер контента */
+    /* Контйнер контента */
     .content-wrapper {
         display: flex;
         flex-direction: column;
@@ -3381,6 +3372,53 @@ footer {
     @keyframes slideOut {
         from { opacity: 1; }
         to { opacity: 1; }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    /* Стили для KeshaGPT на мобильных */
+    .keshagpt-wrapper {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .keshagpt-container {
+        flex: 1;
+        background-color: rgba(0, 0, 0, 0.7);
+        overflow: hidden;
+        position: relative;
+        height: calc(100vh - 140px); /* Увеличиваем высоту контейнера */
+    }
+
+    .keshagpt-frame {
+        width: 100%;
+        height: calc(100% + 60px);
+        border: none;
+        background-color: white;
+        display: block;
+        position: absolute;
+        top: -60px;
+        left: 0;
+    }
+
+    .keshagpt-nav {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 15px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        z-index: 1;
     }
 }
 
