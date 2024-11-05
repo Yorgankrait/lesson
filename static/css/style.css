@@ -2119,7 +2119,7 @@ footer {
     }
 }
 
-/* Дополнительные корректировки для очень малньких экранов */
+/* Дополнительные корректировки для очень малньких ��кранов */
 @media screen and (max-width: 320px) {
     .content-wrapper {
         margin: 60px auto 70px;
@@ -2843,7 +2843,7 @@ footer {
     }
 
     .footer-item {
-        width: calc(100% - 10px); /* Уменьшаем отступы д��я маленьких экранов */
+        width: calc(100% - 10px); /* Уменьшаем отступы дя маленьких экранов */
         margin: 0;
     }
 
@@ -3203,6 +3203,49 @@ footer {
 
     .chatbot-input {
         background: rgba(0, 0, 0, 0.3);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    /* Контейнер интерпретатора */
+    .interpreter-container {
+        width: calc(100% - 4px); /* Учитываем границы */
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 15px;
+        box-sizing: border-box;
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+    }
+
+    /* Обертка интерпретатора */
+    .interpreter-wrapper {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* CodeMirror редактор */
+    .CodeMirror {
+        width: 100%;
+        height: 300px;
+        margin: 10px 0;
+        box-sizing: border-box;
+    }
+
+    /* Область вывода */
+    .output-area {
+        width: 100%;
+        margin: 10px 0;
+        box-sizing: border-box;
+    }
+}
+
+/* Дополнительные корректировки для маленьких экранов */
+@media screen and (max-width: 480px) {
+    .interpreter-container {
+        padding: 10px;
     }
 }
 
