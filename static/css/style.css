@@ -2168,7 +2168,7 @@ footer {
 
 /* Обновляем стили для мобильных устройств */
 @media screen and (max-width: 768px) {
-    /* Фиксируем высоту навгации */
+    /* Фиксируем всоту навгации */
     nav {
         position: fixed;
         top: 0;
@@ -2420,12 +2420,11 @@ footer {
         height: auto;
         margin: 0;
         padding: 10px;
-        gap: 10px;
+        gap: 30px; /* Увеличиваем отступ между flex-элементами до 30px */
         padding-bottom: 80px;
         border: 2px solid white;
         width: 100%;
         box-sizing: border-box;
-        align-items: center; /* Центрируем дочерние элементы по горизонтали */
     }
 
     /* Навигация */
@@ -2459,10 +2458,10 @@ footer {
     main {
         order: 2;
         position: relative;
-        width: 100%; /* Полная ширина */
-        left: 0; /* Убираем отступ */
+        width: 100%;
+        left: 0;
         padding: 15px;
-        margin: 0;
+        margin-bottom: 15px; /* Увеличиваем нижний отступ */
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border: 2px solid blue;
@@ -2479,10 +2478,10 @@ footer {
     .chatbot {
         order: 3;
         position: relative;
-        width: 100%; /* Такая же ширина как у main */
-        left: 0; /* Такое же позиционирование как у main */
+        width: 100%;
+        left: 0;
         padding: 0;
-        margin: 0;
+        margin-top: 15px; /* Увеличиваем верхний отступ */
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 10px;
@@ -3009,7 +3008,7 @@ footer {
         border: 2px solid blue;
         flex: 1;
         min-height: 45vh;
-        align-self: center; /* Центрируем по горизонтали */
+        align-self: center; /* Цент��ируем по горизонтали */
     }
 }
 
@@ -3160,7 +3159,7 @@ footer {
         height: auto;
         margin: 0;
         padding: 10px;
-        gap: 10px;
+        gap: 10px; /* Этот отступ будет применяться между всеми flex-элементами */
         padding-bottom: 80px;
         border: 2px solid white;
         width: 100%;
@@ -3169,66 +3168,33 @@ footer {
 
     /* Основной контент */
     main {
+        order: 2;
         position: relative;
         width: 100%;
         left: 0;
         padding: 15px;
-        margin: 0;
+        margin-bottom: 10px; /* Добавляем отступ снизу */
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border: 2px solid blue;
         flex: 1;
     }
 
-    /* Контейнеры внутри main */
-    .register-container,
-    .login-container,
-    .form-container,
-    .resources-container,
-    .lessons-container,
-    .students-container,
-    .attendance-container {
+    /* Чат-бот */
+    .chatbot {
+        order: 3;
+        position: relative;
         width: 100%;
-        max-width: 100%;
+        left: 0;
         padding: 0;
-        margin: 0;
+        margin-top: 10px; /* Добавляем отступ сверху */
         box-sizing: border-box;
-    }
-
-    /* Таблица регистрации */
-    .register-table {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .register-table tr {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .register-table td {
-        width: 100%;
-        padding: 5px 0;
-        text-align: left;
-    }
-
-    .register-table td:first-child {
-        padding-bottom: 2px;
-    }
-
-    /* Поля ввода */
-    .register-table input,
-    .register-table select {
-        width: 100%;
-        padding: 8px;
-        margin: 0;
-        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        border: 2px solid red;
+        flex: 1;
+        min-height: 45vh;
+        display: block;
     }
 }
 
