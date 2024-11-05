@@ -338,7 +338,7 @@ footer {
     cursor: pointer;
     transition: background-color 0.3s;
     margin: 0 auto;
-    transform: translateX(-52px); /* С  н 52 пикселя */
+    transform: translateX(-52px); /* С  н 52 пикеля */
 }
 
 .register-button:hover {
@@ -626,7 +626,6 @@ footer {
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
-    border: 2px solid #4CAF50;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -1627,7 +1626,7 @@ footer {
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
 }
 
-/* Стили для полного просмотра статьи */
+/* Стили для полного просмотра татьи */
 .article-view {
     max-width: 900px;
     margin: 0 auto;
@@ -2039,7 +2038,7 @@ footer {
         margin-bottom: 10px;
     }
 
-    /* Корректируем чат-бот */
+    /* Коректируе чат-бот */
     .chatbot {
         height: 60vh; /* Уменьшаем высоту чата */
         bottom: 60px; /* Поднимаем выше футера */
@@ -2323,7 +2322,6 @@ footer {
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 10px;
-        border: 2px solid red;
         display: none; /* По умолчанию скрыт */
         z-index: 999;
     }
@@ -2352,7 +2350,6 @@ footer {
 
     /* Остальные элементы чат-бота */
     .chatbot-window {
-        border: 2px solid yellow;
         height: 100%;
     }
 
@@ -2362,12 +2359,12 @@ footer {
     }
 
     .chatbot-messages {
-        border: 2px solid orange;
+        border: 2px;
         height: calc(100% - 120px);
     }
 
     .chatbot-input {
-        border: 2px solid purple;
+        border: 2px;
         background: rgba(0, 0, 0, 0.3);
     }
 }
@@ -2420,9 +2417,8 @@ footer {
         height: auto;
         margin: 0;
         padding: 10px;
-        gap: 30px; /* Увеличиваем отступ между flex-элементами до 30px */
+        gap: 30px;
         padding-bottom: 80px;
-        border: 2px solid white;
         width: 100%;
         box-sizing: border-box;
     }
@@ -2461,10 +2457,10 @@ footer {
         width: 100%;
         left: 0;
         padding: 15px;
-        margin-bottom: 15px; /* Увеличиваем нижний отступ */
+        margin-bottom: 15px;
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
-        border: 2px solid blue;
+        border-radius: 10px;
         flex: 1;
     }
 
@@ -2481,11 +2477,10 @@ footer {
         width: 100%;
         left: 0;
         padding: 0;
-        margin-top: 15px; /* Увеличиваем верхний отступ */
+        margin-top: 15px;
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 10px;
-        border: 2px solid red;
         flex: 1;
         min-height: 45vh;
         display: block;
@@ -2848,7 +2843,7 @@ footer {
     }
 
     .footer-item {
-        width: calc(100% - 10px); /* Уменьшаем отступы для маленьких экранов */
+        width: calc(100% - 10px); /* Уменьшаем отступы д��я маленьких экранов */
         margin: 0;
     }
 
@@ -2869,7 +2864,7 @@ footer {
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 10px;
-        border: 2px solid blue;
+        border: 2px;
         flex: 1;
         min-height: 45vh;
         overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
@@ -2890,7 +2885,7 @@ footer {
         overflow-x: hidden;
     }
 
-    /* Кнопки и поля ввода */
+    /* Кнопки  поля ввода */
     main .action-button,
     main .menu-button,
     main .login-button,
@@ -2990,7 +2985,6 @@ footer {
         padding: 10px; /* Фиксированный отступ */
         gap: 10px;
         padding-bottom: 80px;
-        border: 2px solid white;
         width: 100%;
         box-sizing: border-box;
         align-items: stretch; /* Растягиваем дочерние элементы по ширине */
@@ -3005,10 +2999,9 @@ footer {
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 10px;
-        border: 2px solid blue;
         flex: 1;
         min-height: 45vh;
-        align-self: center; /* Цент��ируем по горизонтали */
+        align-self: center; /* Центируем по горизонтали */
     }
 }
 
@@ -3159,9 +3152,8 @@ footer {
         height: auto;
         margin: 0;
         padding: 10px;
-        gap: 10px; /* Этот отступ будет применяться между всеми flex-элементами */
+        gap: 30px;
         padding-bottom: 80px;
-        border: 2px solid white;
         width: 100%;
         box-sizing: border-box;
     }
@@ -3173,10 +3165,10 @@ footer {
         width: 100%;
         left: 0;
         padding: 15px;
-        margin-bottom: 10px; /* Добавляем отступ снизу */
+        margin-bottom: 15px;
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
-        border: 2px solid blue;
+        border-radius: 10px;
         flex: 1;
     }
 
@@ -3187,14 +3179,30 @@ footer {
         width: 100%;
         left: 0;
         padding: 0;
-        margin-top: 10px; /* Добавляем отступ сверху */
+        margin-top: 15px;
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 10px;
-        border: 2px solid red;
         flex: 1;
         min-height: 45vh;
         display: block;
+    }
+
+    /* Остальные элементы чат-бота */
+    .chatbot-window {
+        height: 100%;
+    }
+
+    .chatbot-header {
+        background-color: rgba(76, 175, 80, 0.8);
+    }
+
+    .chatbot-messages {
+        height: calc(100% - 120px);
+    }
+
+    .chatbot-input {
+        background: rgba(0, 0, 0, 0.3);
     }
 }
 
