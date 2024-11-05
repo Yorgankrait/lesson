@@ -167,7 +167,7 @@ main {
 
 /* Добавляем стили для случая, когда мы не на главной странице */
 .full-width main {
-    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить обла т-бота */
+    width: calc(100% + 140px); /* Увеличиваем ширину, чтобы охватить обла -бота */
     left: -70px; /* Сохраняе левое смещение */
 }
 
@@ -1041,7 +1041,7 @@ footer {
     }
 }
 
-/* Задаем индексы ля элементов */
+/* Задаем индексы я элементов */
 .dropdown-item:nth-child(1) {
     --item-index: 1;
 }
@@ -1930,7 +1930,7 @@ footer {
         padding: 10px 0;
     }
 
-    .welcome-section h1 {
+    welcome-section h1 {
         font-size: 20px;
     }
 
@@ -1943,7 +1943,7 @@ footer {
         gap: 5px;
     }
 
-    .chatbot-header {
+    chatbot-header {
         font-size: 14px;
     }
 
@@ -1984,7 +1984,7 @@ footer {
         height: calc(100vh - 150px); /* Корректируем высоту */
     }
 
-    /* Исправляем навигацию */
+    /* Исравляем навигацию */
     nav {
         height: auto;
         min-height: 60px;
@@ -2398,7 +2398,7 @@ footer {
 
 /* Мобильная версия */
 @media screen and (max-width: 768px) {
-    /* Рзрешаем скроллинг для всей страницы */
+    /* Рзрешаем скроллинг дя всей страницы */
     html, body {
         height: auto;
         overflow-y: auto;
@@ -2459,16 +2459,20 @@ footer {
     main {
         order: 2;
         position: relative;
-        width: 100%;
-        left: 0;
+        width: 100%; /* Полная ширина */
+        left: 0; /* Убираем отступ */
         padding: 15px;
         margin: 0;
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
-        border-radius: 10px;
         border: 2px solid blue;
         flex: 1;
-        min-height: 45vh;
+    }
+
+    /* Отменяем стили для full-width main на мобильных */
+    .full-width main {
+        width: 100%; /* Сбрасываем расширенную ширину */
+        left: 0; /* Убираем отступ */
     }
 
     /* Чат-бот */
@@ -2859,30 +2863,295 @@ footer {
     /* Основной контент */
     main {
         position: relative;
-        width: 100%; /* Занимает всю ширину */
+        width: calc(100% - 4px);
         left: 0;
         padding: 15px;
-        margin: 0; /* Убираем отступы */
+        margin: 0 auto;
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 10px;
         border: 2px solid blue;
+        flex: 1;
+        min-height: 45vh;
+        overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
     }
 
-    /* Чат-бот */
-    .chatbot {
-        width: 100%; /* Занимает всю ширину */
-        height: 300px;
-        margin: 10px 0; /* Оставляем только вертикальные отступы */
+    /* Контейнеры внутри main */
+    main .form-container,
+    main .login-container,
+    main .register-container,
+    main .resources-container,
+    main .lessons-container,
+    main .students-container,
+    main .attendance-container {
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    /* Кнопки и поля ввода */
+    main .action-button,
+    main .menu-button,
+    main .login-button,
+    main .register-button,
+    main .back-button,
+    main input,
+    main select,
+    main textarea {
+        width: 100%;
+        max-width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        box-sizing: border-box;
+        white-space: normal; /* Разрешаем перенос текста */
+        word-wrap: break-word; /* Разрешаем перенос длинных слов */
+        font-size: 14px; /* Уменьшаем размер шрифта */
+    }
+
+    /* Текстовый контент */
+    main p,
+    main h1,
+    main h2,
+    main h3,
+    main h4,
+    main span,
+    main div {
+        max-width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* Таблицы */
+    main table {
+        width: 100%;
+        max-width: 100%;
+        display: block;
+        overflow-x: auto;
+    }
+
+    /* Сетки */
+    main .lessons-list,
+    main .resources-grid,
+    main .student-grid,
+    main .articles-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        width: 100%;
+        margin: 10px 0;
         padding: 0;
+    }
+
+    /* Карточки */
+    main .lesson-card,
+    main .resource-card,
+    main .student-card,
+    main .article-card {
+        width: 100%;
+        margin: 0 0 10px 0;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    /* Группы кнопок */
+    main .lesson-actions,
+    main .resource-actions,
+    main .attendance-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+    }
+
+    /* Длинный текст в кнопках */
+    main button,
+    main a.button,
+    main .nav-button,
+    main .footer-button {
+        white-space: normal;
+        height: auto;
+        min-height: 44px; /* Минимальная высота для удобства нажатия */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        line-height: 1.2;
+        padding: 8px 12px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        height: auto;
+        margin: 0;
+        padding: 10px; /* Фиксированный отступ */
+        gap: 10px;
+        padding-bottom: 80px;
+        border: 2px solid white;
+        width: 100%;
+        box-sizing: border-box;
+        align-items: stretch; /* Растягиваем дочерние элементы по ширине */
+    }
+
+    main {
+        position: relative;
+        width: calc(100% - 4px); /* Учитываем границу */
+        left: 0;
+        padding: 15px;
+        margin: 0 auto; /* Центрируем */
         box-sizing: border-box;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 10px;
-        position: relative;
-        bottom: 0;
-        border: 2px solid red;
+        border: 2px solid blue;
+        flex: 1;
+        min-height: 45vh;
+        align-self: center; /* Центрируем по горизонтали */
+    }
+}
+
+/* Дополнительные корректировки для маленьких экранов */
+@media screen and (max-width: 480px) {
+    .content-wrapper {
+        padding: 5px; /* Уменьшаем отступ */
     }
 
+    main {
+        width: calc(100% - 4px);
+        padding: 10px;
+    }
+}
+
+/* Корректировки для очень маленьких экранов */
+@media screen and (max-width: 320px) {
+    .content-wrapper {
+        padding: 3px; /* Еще меньше отступ */
+    }
+
+    main {
+        padding: 8px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    /* Обновляем стили для формы регистрации */
+    .register-container {
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .register-table {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .register-table td {
+        display: block;
+        width: 100%;
+        padding: 5px 0;
+        text-align: left;
+    }
+
+    .register-table td:first-child {
+        width: 100%;
+        text-align: left;
+        padding-right: 0;
+        font-size: 14px;
+    }
+
+    .register-table input,
+    .register-table select {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    /* Общие стили для всех форм */
+    form {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    /* Стили для полей ввода и селектов */
+    input,
+    select,
+    textarea {
+        width: 100%;
+        max-width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    /* Стили для кнопок в формах */
+    .register-button,
+    .login-button,
+    .submit-button {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        box-sizing: border-box;
+        font-size: 14px;
+        transform: none;
+    }
+
+    /* Стили для заголовков в формах */
+    .register-container h2,
+    .login-container h2,
+    .form-container h2 {
+        font-size: 20px;
+        margin: 10px 0;
+        padding: 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Стили для текстовых меток */
+    label,
+    .form-label {
+        font-size: 14px;
+        margin: 5px 0;
+        display: block;
+        width: 100%;
+    }
+}
+
+/* Дополнительные корректировки для маленьких экранов */
+@media screen and (max-width: 480px) {
+    .register-table td:first-child {
+        font-size: 13px;
+    }
+
+    input,
+    select,
+    textarea {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+    .register-button,
+    .login-button,
+    .submit-button {
+        font-size: 13px;
+        padding: 8px;
+    }
+}
+
+@media screen and (max-width: 768px) {
     /* Контейнер контента */
     .content-wrapper {
         display: flex;
@@ -2891,32 +3160,75 @@ footer {
         height: auto;
         margin: 0;
         padding: 10px;
-        gap: 10px; /* Фиксированный отступ между элементами */
+        gap: 10px;
         padding-bottom: 80px;
         border: 2px solid white;
         width: 100%;
         box-sizing: border-box;
     }
 
-    /* Остальные элементы чат-бота */
-    .chatbot-window {
-        border: 2px solid yellow;
-        height: calc(100% - 4px);
+    /* Основной контент */
+    main {
+        position: relative;
+        width: 100%;
+        left: 0;
+        padding: 15px;
+        margin: 0;
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid blue;
+        flex: 1;
     }
 
-    .chatbot-header {
-        border: 2px solid green;
-        background-color: rgba(76, 175, 80, 0.8);
+    /* Контейнеры внутри main */
+    .register-container,
+    .login-container,
+    .form-container,
+    .resources-container,
+    .lessons-container,
+    .students-container,
+    .attendance-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
     }
 
-    .chatbot-messages {
-        border: 2px solid orange;
-        height: calc(100% - 120px);
+    /* Таблица регистрации */
+    .register-table {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
     }
 
-    .chatbot-input {
-        border: 2px solid purple;
-        background: rgba(0, 0, 0, 0.3);
+    .register-table tr {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .register-table td {
+        width: 100%;
+        padding: 5px 0;
+        text-align: left;
+    }
+
+    .register-table td:first-child {
+        padding-bottom: 2px;
+    }
+
+    /* Поля ввода */
+    .register-table input,
+    .register-table select {
+        width: 100%;
+        padding: 8px;
+        margin: 0;
+        box-sizing: border-box;
     }
 }
 
